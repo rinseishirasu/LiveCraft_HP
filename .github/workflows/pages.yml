@@ -18,6 +18,8 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
+      - name: Validate published data files (read only)
+        run: node tests/data-format.test.cjs
       - name: Validate schedule status rules
         run: node tests/streams.test.cjs
       - name: Validate member platform filters

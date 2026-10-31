@@ -100,6 +100,7 @@ jobs:
         run: |
           node tests/legacy-inventory.test.cjs
           node tests/manage-content.test.cjs
+          node tests/data-format.test.cjs
           node tests/streams.test.cjs
           node tests/schedule-page.test.cjs
           node tests/member-icon.test.cjs
