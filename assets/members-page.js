@@ -1,0 +1,158 @@
+(() => {
+  'use strict';
+  const grid = document.getElementById('member-grid');
+  const empty = document.getElementById('members-empty');
+  const count = document.querySelector('[data-member-count]');
+  const filterWrap = document.querySelector('[data-member-filter-wrap]');
+  const filter = document.querySelector('[data-member-filter]');
+  const dialog = document.getElementById('member-profile-dialog');
+  const dialogContent = document.getElementById('profile-dialog-content');
+  const closeButton = document.querySelector('[data-profile-close]');
+  if (!grid || !empty || !count || !filterWrap || !filter || !dialog || !dialogContent || !closeButton) return;
+
+  const raw = Array.isArray(window.LIVE_CRAFT_MEMBERS) ? window.LIVE_CRAFT_MEMBERS : [];
+  const members = raw.filter(m => m && m.published === true && typeof m.name === 'string' && m.name.trim());
+  count.textContent = String(members.length).padStart(2, '0');
+  if (!members.length) return;
+  empty.hidden = true;
+
+  const genres = [...new Set(members.flatMap(m => Array.isArray(m.genres) ? m.genres.filter(g => typeof g === 'string' && g.trim()) : []))];
+  if (genres.length > 1) {
+    filterWrap.hidden = false;
+    for (const genre of genres) {
+      const option = document.createElement('option');
+      option.value = genre;
+      option.textContent = genre;
+      filter.append(option);
+    }
+  }
+
+  const safeUrl = url => {
+    if (typeof url !== 'string') return null;
+    try {
+      const parsed = new URL(url);
+      return parsed.protocol === 'https:' ? parsed.href : null;
+    } catch { return null; }
+  };
+  const avatarPath = path => typeof path === 'string' && /^assets\/members\/[a-zA-Z0-9_.-]+\.(png|jpg|jpeg|webp|avif)$/.test(path) ? path : null;
+  const node = (tag, className, content) => {
+    const el = document.createElement(tag);
+    if (className) el.className = className;
+    if (content != null) el.textContent = String(content);
+    return el;
+  };
+  const initials = name => [...name.trim()].slice(0, 2).join('').toUpperCase();
+  const createAvatar = (member, className, eager = false) => {
+    const wrap = node('span', className);
+    const fallback = () => wrap.replaceChildren(node('span', 'member-initial', initials(member.name)));
+    const src = avatarPath(member.avatar);
+    if (!src) {
+      fallback();
+    } else {
+      const img = node('img');
+      img.src = src;
+      img.alt = '';
+      img.width = eager ? 280 : 180;
+      img.height = eager ? 280 : 180;
+      img.decoding = 'async';
+      img.loading = eager ? 'eager' : 'lazy';
+      img.addEventListener('error', fallback, {once: true});
+      wrap.append(img);
+    }
+    return wrap;
+  };
+
+  let triggerButton = null;
+  const showProfile = (member, trigger) => {
+    triggerButton = trigger;
+    const body = node('div', 'profile-details');
+    const header = node('div', 'profile-header');
+    header.append(node('p', 'profile-eyebrow', 'LIVE CRAFT / MEMBER PROFILE'));
+    const title = node('h2', 'profile-title', member.name);
+    title.id = 'profile-dialog-name';
+    header.append(title);
+    if (typeof member.role === 'string' && member.role.trim()) {
+      header.append(node('span', 'profile-role', member.role.trim()));
+    }
+    body.append(header);
+
+    if (Array.isArray(member.genres)) {
+      const tags = node('div', 'member-tags profile-genres');
+      member.genres.filter(x => typeof x === 'string' && x.trim()).slice(0, 6).forEach(x => tags.append(node('span', 'member-tag', x)));
+      if (tags.childElementCount) body.append(tags);
+    }
+
+    const bioSection = node('section', 'profile-section');
+    bioSection.append(node('h3', 'profile-section-title', 'ABOUT'));
+    bioSection.append(node('p', 'profile-bio', typeof member.bio === 'string' && member.bio.trim() ? member.bio.trim() : 'プロフィールの紹介文は準備中です。'));
+    body.append(bioSection);
+
+    const linksSection = node('section', 'profile-section');
+    linksSection.append(node('h3', 'profile-section-title', 'ACTIVITY / SNS'));
+    const linkList = node('div', 'profile-links');
+    if (Array.isArray(member.links)) {
+      member.links.slice(0, 10).forEach(link => {
+        if (!link || typeof link.label !== 'string' || !link.label.trim()) return;
+        const url = safeUrl(link.url);
+        if (!url) return;
+        const a = node('a', 'profile-link');
+        a.href = url;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.setAttribute('aria-label', `${member.name}の${link.label}を開く（新しいタブ）`);
+        a.append(node('span', 'profile-link-label', link.label));
+        a.append(node('span', 'profile-link-arrow', '↗'));
+        linkList.append(a);
+      });
+    }
+    if (linkList.childElementCount) linksSection.append(linkList);
+    else linksSection.append(node('p', 'profile-link-empty', '活動リンクは準備中です。'));
+    body.append(linksSection);
+
+    const layout = node('div', 'profile-layout');
+    const side = node('div', 'profile-art');
+    side.append(createAvatar(member, 'profile-avatar', true));
+    side.append(node('span', 'profile-art-caption', 'STREAMERS COMMUNITY'));
+    layout.append(side, body);
+    dialogContent.replaceChildren(layout);
+    dialog.showModal();
+    document.body.classList.add('modal-open');
+    closeButton.focus();
+  };
+  closeButton.addEventListener('click', () => dialog.close());
+  dialog.addEventListener('click', event => {
+    // Clicks on the native dialog's backdrop (outside its rectangle) close it.
+    if (event.target === dialog) dialog.close();
+  });
+  dialog.addEventListener('close', () => {
+    document.body.classList.remove('modal-open');
+    if (triggerButton?.isConnected) triggerButton.focus();
+    triggerButton = null;
+  });
+
+  const makeIcon = member => {
+    const item = node('li', 'member-icon-item');
+    const button = node('button', 'member-icon-button');
+    button.type = 'button';
+    button.setAttribute('aria-label', `${member.name}のプロフィールを見る`);
+    button.setAttribute('aria-haspopup', 'dialog');
+    button.title = `${member.name}のプロフィールを見る`;
+    button.append(createAvatar(member, 'member-icon-art'));
+    button.append(node('span', 'member-icon-action', '↗'));
+    button.addEventListener('click', () => showProfile(member, button));
+    item.append(button);
+    return item;
+  };
+  const render = genre => {
+    const visible = genre === 'all' ? members : members.filter(m => Array.isArray(m.genres) && m.genres.includes(genre));
+    grid.replaceChildren(...visible.map(makeIcon));
+    grid.hidden = !visible.length;
+    if (!visible.length) {
+      empty.hidden = false;
+      empty.querySelector('h3').textContent = '該当するメンバーはいません。';
+      empty.querySelector('p').textContent = '別のジャンルを選択してください。';
+    } else empty.hidden = true;
+  };
+  filter.addEventListener('change', () => render(filter.value));
+  render('all');
+})();
