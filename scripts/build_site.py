@@ -11,7 +11,7 @@ try:
 except ImportError:
     Image = None
 
-PAGES=['index.html','about.html','activities.html','members.html','news.html','join.html','faq.html','contact.html','guidelines.html','privacy.html','videos.html','events.html','collabs.html','schedule.html','discover.html']
+PAGES=['index.html','about.html','activities.html','members.html','news.html','join.html','faq.html','contact.html','guidelines.html','privacy.html','videos.html','events.html','collabs.html','schedule.html','discover.html','start.html','projects.html']
 ROOT=Path(__file__).resolve().parents[1]
 def build(destination,base_url):
     out=Path(destination).resolve();out.mkdir(parents=True,exist_ok=True)
@@ -22,7 +22,7 @@ def build(destination,base_url):
     # Images referenced by content arrays are rewritten to optimized WebP if actually smaller.
     if Image:
         converted={}
-        for folder in ['members','news','videos','events','collabs','streams']:
+        for folder in ['members','news','videos','events','collabs','projects','streams']:
             target=out/'assets'/folder
             if not target.exists():continue
             for p in list(target.iterdir()):

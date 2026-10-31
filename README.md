@@ -1,3 +1,7 @@
+# Ver.6.1 FIRST IMPRESSION × CROSSOVER
+
+旧計画のVer.6.1とVer.6.2を統合しました。導入は`START_HERE_V6.1.md`、変更点は`RELEASE_NOTES_v6.1.md`を参照してください。
+
 # LIVE CRAFT Ver.6.0 最終統合版
 
 デザイン刷新・お気に入り・配信カレンダー登録に加え、横断検索、次回配信、予定URL共有、メンバー関連活動を含む最終統合版です。

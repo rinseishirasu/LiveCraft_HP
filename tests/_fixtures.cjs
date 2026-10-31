@@ -10,6 +10,7 @@ const VARIABLES = Object.freeze({
   videos:'LIVE_CRAFT_VIDEOS',
   events:'LIVE_CRAFT_EVENTS',
   collabs:'LIVE_CRAFT_COLLABS',
+  projects:'LIVE_CRAFT_PROJECTS',
   config:'LIVE_CRAFT_CONFIG'
 });
 function seedEmptyPublicData(root) {

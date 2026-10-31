@@ -3,7 +3,7 @@
 'use strict';
 const fs = require('node:fs');
 const {readData, writeData} = require('./manage_content.cjs');
-const TYPES = ['members','streams','news','videos','events','collabs','recruitment'];
+const TYPES = ['members','streams','news','videos','events','collabs','projects','recruitment'];
 const ID_RE = /^[a-z0-9][a-z0-9-]{0,63}$/;
 const safe = x => String(x ?? '').replace(/[\r\n\t]/g, ' ').slice(0,140);
 const md = x => safe(x).replace(/[|]/g,'\\|').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/`/g,'\\`');
