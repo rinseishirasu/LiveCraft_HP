@@ -24,8 +24,8 @@ window.LIVE_CRAFT_MEMBERS = [
     "primaryPlatform": "REALITY",
     "primaryPlatformUrl": "https://reality.app/profile/d19a7bd0?adj_t=8ogcewh_z9yhix5",
     "links": [
-      { label: "YouTube", url: "https://www.youtube.com/@ShirasuRinsei" },
-      { label: "X", url: "https://x.com/ShirasuRinsei" }
+      { "label": "YouTube", "url": "https://www.youtube.com/@ShirasuRinsei" },
+      { "label": "X", "url": "https://x.com/ShirasuRinsei" }
     ]
   }
 ];
