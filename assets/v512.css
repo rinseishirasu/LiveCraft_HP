@@ -1,0 +1,90 @@
+/* Live Craft v5.1.2 | Member modal: make long profiles reachable on any viewport.
+ * The legacy v4 dialog had overflow:hidden, clipping optional profile fields.
+ * Keep the native <dialog> (focus trap and Escape support) and give its content
+ * a single, dedicated scroll area while keeping the close control visible.
+ */
+body.version-five.page-members #member-profile-dialog[open] {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: min(1080px, calc(100vw - 24px));
+  max-width: calc(100vw - 24px);
+  max-height: min(900px, calc(100vh - 24px)); /* fallback */
+  max-height: min(900px, calc(100dvh - 24px));
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+body.version-five.page-members #member-profile-dialog .profile-dialog-close {
+  position: relative;
+  inset: auto;
+  top: auto;
+  float: none;
+  align-self: flex-end;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  margin: 10px 12px 6px auto;
+  z-index: 30;
+}
+body.version-five.page-members #member-profile-dialog .profile-dialog-content {
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-gutter: stable;
+  -webkit-overflow-scrolling: touch;
+}
+body.version-five.page-members #member-profile-dialog .profile-details,
+body.version-five.page-members #member-profile-dialog .profile-layout,
+body.version-five.page-members #member-profile-dialog .profile-links {
+  min-width: 0;
+}
+body.version-five.page-members #member-profile-dialog .profile-bio,
+body.version-five.page-members #member-profile-dialog .profile-schedule,
+body.version-five.page-members #member-profile-dialog .profile-title {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 700px) {
+  body.version-five.page-members #member-profile-dialog[open] {
+    width: calc(100vw - 12px);
+    max-width: calc(100vw - 12px);
+    max-height: calc(100vh - 12px); /* fallback */
+    max-height: calc(100dvh - 12px);
+    border-radius: 20px;
+  }
+  body.version-five.page-members #member-profile-dialog .profile-dialog-close {
+    flex-basis: 40px;
+    width: 40px;
+    height: 40px;
+    margin: 7px 9px 4px auto;
+  }
+  body.version-five.page-members #member-profile-dialog .profile-dialog-content {
+    scrollbar-gutter: auto;
+  }
+  /* Keep action labels readable on narrow screens instead of squeezing 3 buttons. */
+  body.version-five.page-members #member-profile-dialog .lc43-modal-actions > * {
+    box-sizing: border-box;
+    flex: 1 1 100%;
+    min-width: 0;
+    text-align: center;
+  }
+}
+@media (max-height: 480px) {
+  body.version-five.page-members #member-profile-dialog[open] {
+    max-height: calc(100vh - 8px); /* fallback */
+    max-height: calc(100dvh - 8px);
+  }
+  body.version-five.page-members #member-profile-dialog .profile-dialog-close {
+    flex-basis: 34px;
+    width: 34px;
+    height: 34px;
+    margin: 4px 8px 2px auto;
+    font-size: 1.45rem;
+  }
+  body.version-five.page-members #member-profile-dialog .profile-dialog-content {
+    padding-top: 4px;
+  }
+}

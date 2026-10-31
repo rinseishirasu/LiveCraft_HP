@@ -45,6 +45,21 @@
   let activeGeneration = 'all';
   let searchTerm = '';
   const searchInput = document.getElementById('member-search');
+  const platformApi = window.LiveCraftPlatforms;
+  const platformSelect = document.getElementById('member-platform');
+  const platformWrap = document.querySelector('[data-platform-filter-wrap]');
+  if (platformApi && platformSelect && platformWrap) {
+    const values = platformApi.options(members);
+    if (values.length) {
+      for (const name of values) {
+        const option = document.createElement('option');
+        option.value = name;
+        option.textContent = name;
+        platformSelect.append(option);
+      }
+      platformWrap.hidden = false;
+    }
+  }
 
   const genres = [...new Set(members.flatMap(m => Array.isArray(m.genres) ? m.genres.filter(g => typeof g === 'string' && g.trim()) : []))];
   if (genres.length > 1) {
@@ -126,7 +141,8 @@
       badge.append(node('span', 'member-initial-name', initials(member.name)));
       wrap.replaceChildren(badge);
     };
-    const src = avatarPath(member.avatar);
+    // Always use the icon image on the list and icon fallback, never the standing illustration.
+    const src = avatarPath(member.avatar) !== fullbodyPath(member.fullbody) ? avatarPath(member.avatar) : null;
     if (!src) {
       fallback();
     } else {
@@ -209,6 +225,20 @@
       affiliation.append(node('span', 'profile-agency-label', '所属事務所'));
       affiliation.append(node('strong', 'profile-agency-name', agency));
       meta.append(affiliation);
+    }
+    const platformName = platformApi?.primary(member) || '';
+    if (platformName) {
+      const badge = node('span', 'profile-primary-platform');
+      badge.append(node('span', 'profile-primary-platform-label', '主要活動プラットフォーム'));
+      badge.append(node('strong', 'profile-primary-platform-name', platformName));
+      const url = platformApi.mainUrl(member);
+      if (url) {
+        const link = node('a', 'profile-primary-platform-link', '配信先へ ↗');
+        link.href = url; link.target = '_blank'; link.rel = 'noopener noreferrer';
+        link.setAttribute('aria-label', `${platformName}の配信先を開く（新しいタブ）`);
+        badge.append(link);
+      }
+      meta.append(badge);
     }
     header.append(meta);
     body.append(header);
@@ -349,8 +379,12 @@
     body.append(actions);
     dialogContent.replaceChildren(layout);
     dialog.showModal();
+    // A previous profile may have been scrolled to the bottom. Reset the
+    // dedicated content scroller each time a new member opens.
+    dialogContent.scrollTop = 0;
+    dialog.scrollTop = 0;
     document.body.classList.add('modal-open');
-    closeButton.focus();
+    closeButton.focus({preventScroll: true});
   };
 
   closeButton.addEventListener('click', () => dialog.close());
@@ -384,6 +418,13 @@
     button.append(chip, inner, node('span', 'member-icon-action', '↗'));
     button.addEventListener('click', () => showProfile(member, button));
     item.append(button);
+    const primaryPlatform = platformApi?.primary(member) || '';
+    if (primaryPlatform) {
+      const platformLabel = node('div', 'member-list-platform');
+      platformLabel.append(node('span', 'member-list-platform-dot'));
+      platformLabel.append(node('span', '', primaryPlatform));
+      item.append(platformLabel);
+    }
     // Keep the icon-first layout; show the agency only when explicitly supplied.
     const agency = typeof member.agency === 'string' ? member.agency.trim().slice(0, 80) : '';
     if (agency) {
@@ -429,21 +470,23 @@
 
   const render = () => {
     const genre = filter.value;
+    const selectedPlatform = platformSelect?.value || 'all';
     const normalized = s => String(s ?? '').normalize('NFKC').toLocaleLowerCase('ja');
     const candidates = members.filter(m => {
-      const searchable = [m.name,m.catchphrase,m.bio,m.role,m.agency,m.fanName,
+      const searchable = [m.name,m.catchphrase,m.bio,m.role,m.agency,m.fanName,platformApi?.primary(m),
         ...(Array.isArray(m.genres)?m.genres:[]),
         ...(Array.isArray(m.links)?m.links.map(l=>l?.label):[])].join(' ');
       return !searchTerm || normalized(searchable).includes(searchTerm);
     });
     const byGenre = genre === 'all' ? candidates : candidates.filter(m => Array.isArray(m.genres) && m.genres.includes(genre));
-    const buttons = [makeGenerationControl('all', 'すべて', byGenre.length)];
+    const byPlatform = selectedPlatform === 'all' ? byGenre : byGenre.filter(m => platformApi?.matches(m, selectedPlatform));
+    const buttons = [makeGenerationControl('all', 'すべて', byPlatform.length)];
     generations.forEach(generation => {
       const value = generation == null ? 'unassigned' : String(generation);
-      buttons.push(makeGenerationControl(value, generationLabel(generation), byGenre.filter(m => generationOf(m) === generation).length));
+      buttons.push(makeGenerationControl(value, generationLabel(generation), byPlatform.filter(m => generationOf(m) === generation).length));
     });
     generationFilters.replaceChildren(...buttons);
-    const selected = activeGeneration === 'all' ? byGenre : byGenre.filter(m => (generationOf(m) == null ? 'unassigned' : String(generationOf(m))) === activeGeneration);
+    const selected = activeGeneration === 'all' ? byPlatform : byPlatform.filter(m => (generationOf(m) == null ? 'unassigned' : String(generationOf(m))) === activeGeneration);
     const visibleGenerations = activeGeneration === 'all' ? generations : generations.filter(g => (g == null ? 'unassigned' : String(g)) === activeGeneration);
     const groups = visibleGenerations.map(generation => {
       const collection = selected.filter(m => generationOf(m) === generation);
@@ -465,6 +508,7 @@
   generationToolbar.hidden = false;
   resultStatus.hidden = false;
   filter.addEventListener('change', render);
+  platformSelect?.addEventListener('change', render);
   searchInput?.addEventListener('input', event => {
     searchTerm = String(event.target.value || '').normalize('NFKC').toLocaleLowerCase('ja').trim();
     render();
