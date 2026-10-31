@@ -15,6 +15,8 @@ window.LIVE_CRAFT_MEMBERS = [
     "birthday": "07-30",
     "debutDate": "2026-01-02",
     "fanName": "ちりめんず",
-    "fanMark": "🐺🥝"
+    "fanMark": "🐺🥝",
+    "fullbody": "assets/members/rinsei-shirasu-icon.png",
+    "avatar": "assets/members/rinsei-shirasu-full-body.png"
   }
 ];
