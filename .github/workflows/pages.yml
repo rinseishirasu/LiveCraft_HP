@@ -15,6 +15,40 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
+      - name: Verify required repository files before execution
+        shell: bash
+        run: |
+          required=(
+            scripts/manage_content.cjs
+            scripts/legacy_inventory.cjs
+            scripts/build_site.py
+            tests/_fixtures.cjs
+            tests/data-format.test.cjs
+            tests/legacy-inventory.test.cjs
+            tests/manage-content.test.cjs
+            tests/streams.test.cjs
+            tests/schedule-page.test.cjs
+            tests/member-icon.test.cjs
+            tests/platforms.test.cjs
+          )
+          missing=0
+          for item in "${required[@]}"; do
+            if [[ ! -f "$item" ]]; then
+              echo "::error file=$item::Missing $item. Copy the full tests/ directory from the Ver.5.1.6 patch to the repository root. If a script is missing, obtain it from the Ver.5.1.6 full package."
+              echo "MISSING: $item"
+              missing=1
+            fi
+          done
+          if [[ "$missing" -ne 0 ]]; then
+            {
+              echo '## Live Craft: 管理・テスト用ファイルが不足しています'
+              echo 'エラーで表示されたパスに、Ver.5.1.6 パッチのファイルをアップロードしてください。'
+              echo '保存先はリポジトリ直下の `tests/` と `scripts/` です。'
+              echo 'アップロード後、コミットしてから Actions を新規実行してください。'
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          echo 'PASS: All required Live Craft scripts and tests are present.'
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
