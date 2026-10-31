@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
       - name: Validate schedule status rules
@@ -32,6 +32,17 @@ jobs:
       - uses: actions/upload-pages-artifact@v4
         with:
           path: _site
+      - name: Failure guidance (see failed step above)
+        if: ${{ failure() }}
+        run: |
+          {
+            echo '## Live Craft: 実行に失敗しました'
+            echo '赤い × が付いたステップを展開し、exit code 1 より上の最初の ERROR / Error を確認してください。'
+            echo '- Update / tests: 入力値、対象ID、日時、データ形式を確認'
+            echo '- Commit validated change: Actions の Contents 書込権限、ブランチ保護・ruleset を確認'
+            echo '- Build / Upload Pages: Python/Pillow のエラーと Pages 設定を確認'
+            echo '詳細: リポジトリの ACTIONS_ERROR_GUIDE.md'
+          } >> "$GITHUB_STEP_SUMMARY"
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -41,3 +52,12 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+      - name: Failure guidance for deployment
+        if: ${{ failure() }}
+        run: |
+          {
+            echo '## GitHub Pages 公開に失敗しました'
+            echo '赤い × の Deploy ステップを確認してください。'
+            echo 'Settings → Pages → Source = GitHub Actions、environment の承認条件、Pages / id-token 権限を確認してください。'
+            echo '詳細: ACTIONS_ERROR_GUIDE.md'
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -41,11 +41,11 @@ jobs:
       contents: read
     steps:
       - name: Checkout latest default branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ github.event.repository.default_branch }}
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: '22'
       - name: Find existing record IDs
@@ -61,6 +61,14 @@ jobs:
           name: livecraft-existing-data
           path: ${{ runner.temp }}/livecraft-existing-data.json
           retention-days: 7
+      - name: Failure guidance for inventory
+        if: ${{ failure() }}
+        run: |
+          {
+            echo '## 既存データ確認に失敗しました'
+            echo '失敗したステップ内の最初の ERROR と、JSON の形式・ID 重複を確認してください。'
+            echo '詳細: ACTIONS_ERROR_GUIDE.md'
+          } >> "$GITHUB_STEP_SUMMARY"
   migrate_build:
     if: ${{ inputs.mode == 'migrate' }}
     runs-on: ubuntu-latest
@@ -69,17 +77,17 @@ jobs:
       pages: write
     steps:
       - name: Checkout latest default branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ github.event.repository.default_branch }}
           fetch-depth: 0
           persist-credentials: true
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: '22'
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
       - name: Add missing IDs without changing existing fields
@@ -120,6 +128,17 @@ jobs:
         uses: actions/upload-pages-artifact@v4
         with:
           path: _site
+      - name: Failure guidance (see failed step above)
+        if: ${{ failure() }}
+        run: |
+          {
+            echo '## Live Craft: 実行に失敗しました'
+            echo '赤い × が付いたステップを展開し、exit code 1 より上の最初の ERROR / Error を確認してください。'
+            echo '- Update / tests: 入力値、対象ID、日時、データ形式を確認'
+            echo '- Commit validated change: Actions の Contents 書込権限、ブランチ保護・ruleset を確認'
+            echo '- Build / Upload Pages: Python/Pillow のエラーと Pages 設定を確認'
+            echo '詳細: リポジトリの ACTIONS_ERROR_GUIDE.md'
+          } >> "$GITHUB_STEP_SUMMARY"
   deploy:
     if: ${{ inputs.mode == 'migrate' }}
     needs: migrate_build
@@ -134,3 +153,12 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Failure guidance for deployment
+        if: ${{ failure() }}
+        run: |
+          {
+            echo '## GitHub Pages 公開に失敗しました'
+            echo '赤い × の Deploy ステップを確認してください。'
+            echo 'Settings → Pages → Source = GitHub Actions、environment の承認条件、Pages / id-token 権限を確認してください。'
+            echo '詳細: ACTIONS_ERROR_GUIDE.md'
+          } >> "$GITHUB_STEP_SUMMARY"
