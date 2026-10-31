@@ -1,11 +1,9 @@
-# Live Craft 公式サイト Ver.1.2（GitHub Pages）
-
-ブラック × ダークネイビー × シルバー × ブルー。既存のLive Craftロゴを使用した、7ページ構成の静的サイト（MEMBERSはアイコン一覧＋クリックで詳細表示）です。
+# Live Craft 公式サイト Ver.2.0
 
 ## ファイル構成
 
 ```text
-live-craft-site/
+live-craft-v2/
 ├─ index.html           HOME
 ├─ about.html           理念・5つの価値観
 ├─ activities.html      活動内容
@@ -16,9 +14,11 @@ live-craft-site/
 ├─ 404.html             404ページ
 ├─ .nojekyll            Jekyll処理を抑止
 └─ assets/
-   ├─ style.css         デザイン全体
+   ├─ style.css         既存サイトの基本レイアウト
+   ├─ v2.css            Ver.2.0 の映像的デザイン・アニメーション
    ├─ config.js         募集状態・外部フォーム・規約日付の設定
    ├─ main.js           スマホメニュー・CTA表示の制御
+   ├─ motion.js         スクロール演出・進捗ライン・インタラクション
    ├─ members.js        メンバー公開データ（要本人同意）
    ├─ members-page.js   アイコン一覧・詳細ポップアップ・ジャンル絞り込み
    ├─ members/          本人が掲載許可したプロフィール画像
@@ -50,7 +50,7 @@ window.LIVE_CRAFT_CONFIG = {
 ## GitHub Pagesへの公開手順
 
 1. GitHubで新しい公開リポジトリ（例: `live-craft`）を作成します。
-2. `live-craft-site/` **内のファイルとフォルダー全部**をリポジトリのルートにアップロードします。
+2. ZIPを解凍したフォルダー **内のファイルとフォルダー全部**をリポジトリのルートにアップロードします。
 3. リポジトリの `Settings` → `Pages` へ移動します。
 4. `Build and deployment` → `Source` を **Deploy from a branch** にします。
 5. Branch を `main`、フォルダーを `/(root)` にして保存します。
@@ -59,7 +59,7 @@ window.LIVE_CRAFT_CONFIG = {
 パスはすべて相対指定なので、GitHub Pagesのプロジェクトサイトでも表示できます。ビルドツール・Node.js・サーバー側プログラムは不要です。
 
 
-## メンバー紹介ページの公開方法（MEMBERS｜Ver.1.2）
+## メンバー紹介ページの公開方法（MEMBERS｜Ver.2.0）
 
 メンバーのプロフィールは `members.html` に表示されます。**初期状態では0名、準備中表示**です。
 一覧には**アイコン画像のみ**を並べ、クリック／タップでプロフィールがポップアップ表示されます。詳細には活動名、役割、ジャンル、自己紹介、各配信サイト・SNSへのリンクが載ります。Escキー・背景のクリック・右上の×ボタンで閉じられます。
@@ -109,4 +109,21 @@ window.LIVE_CRAFT_MEMBERS = [
 
 ## 技術構成
 
-HTML + CSS + 最小限のJavaScript、外部CDN・外部フォント不使用。GitHub Pagesでそのまま公開可能です。
+HTML + CSS + JavaScript（依存ライブラリ・ビルド不要、外部CDN・外部フォント不使用）。GitHub Pagesでそのまま公開可能です。
+
+
+## Ver.2.0 で追加した演出
+
+- **Cinematic Hero**：従来のLCシンボルを中心に、回転する軌道、光、グリッド、浮遊感のあるロゴを配置。
+- **Scroll reveal**：文章・カード・ステップがスクロールで現れます（IntersectionObserver）。
+- **Card hover**：カード上のカーソル位置に沿った柔らかい光、シャープな浮上演出。
+- **Page transitions**：対応ブラウザーのみ、同一サイト内のページ切り替えをフェード演出。非対応環境でも普通に遷移します。
+- **Motion-safe**：OSの「視差効果を減らす / 動きを減らす」設定に従い、強いアニメーションを停止します。
+- **Responsive**：PC・スマートフォンで異なるレイアウトを適用。メンバーモーダルは従来のクリック・Esc・背景クリックを維持。
+- **No dependencies**：GSAP等の外部CDNを必要とせず、HTML/CSS/JSのみで動作します。公開は従来どおり簡単です。
+
+### 開発時に確認すること
+
+簡易的にローカルで表示するには、サイトのフォルダーに移動してターミナルで `python -m http.server 8000` を実行し、 `http://localhost:8000/` を開きます。
+
+**公開前の注意:** 募集フォームURL、問い合わせ先、規約の施行日と正式版の本文、プライバシー方針は未確定です。必ず運営側で確定してください。プロフィールには実在者の情報を初期登録していません。実際の画像を登録する際は本人の公開同意を取得してください。
