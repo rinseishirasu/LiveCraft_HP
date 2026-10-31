@@ -54,6 +54,20 @@ on:
         description: "サムネイル相対パス（任意）"
         required: false
         type: string
+      repeat:
+        description: "繰り返し（keep=既存維持 / none / weekly / biweekly）"
+        required: true
+        type: choice
+        options:
+          - "keep"
+          - "none"
+          - "weekly"
+          - "biweekly"
+        default: "keep"
+      repeatUntil:
+        description: "繰り返し終了日（YYYY-MM-DD、開始日から366日以内）。解除は __CLEAR__"
+        required: false
+        type: string
       published:
         description: "公開状態（keep は既存値を維持 / 新規時は非公開）"
         required: true

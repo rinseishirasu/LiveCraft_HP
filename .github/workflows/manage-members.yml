@@ -64,6 +64,18 @@ on:
           - "true"
           - "false"
         default: "keep"
+      fanClubUrl:
+        description: "本人が許可した公式FCの外部URL（https://、任意）"
+        required: false
+        type: string
+      fanClubLabel:
+        description: "FCリンクの表示名（任意）"
+        required: false
+        type: string
+      fanGuidelinesUrl:
+        description: "本人の二次創作・応援ガイドラインURL（任意）"
+        required: false
+        type: string
       extras_json:
         description: "追加プロフィール項目JSON（任意）"
         required: false
