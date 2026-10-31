@@ -1,4 +1,4 @@
-# Live Craft 公式サイト Ver.4.1
+# Live Craft 公式サイト Ver.4.2
 
 **テーマ：ONE COMMUNITY. MANY COLORS.**
 
@@ -12,6 +12,73 @@ GitHub Pagesにそのまま置ける、ビルド不要の静的公式サイト�
 4. プロフィール詳細に「立ち絵が映える縦長ステージ」を追加。`fullbody` を設定すると画像を表示。未設定ならアイコンの拡大表示に自動切り替え
 5. 既存10ページ、NEWS、FAQ検索、CONTACT、募集設定、プライバシー・規約ページを維持
 6. PC・スマホ表示に対応し、`prefers-reduced-motion` に配慮
+
+## Ver.4.2 の主な追加機能
+
+メンバーのプロフィール詳細ポップアップを拡張しました。従来の「期生別アイコン一覧」「個人プロフィール」「立ち絵」「ジャンル」「自己紹介」「SNS」「期生カラー」を残し、公開したい情報だけを追加できます。
+
+| 追加項目 | `assets/members.js` のキー | 登録形式 |
+|---|---|---|
+| キャッチコピー | `catchphrase` | 文字列 |
+| 誕生日 | `birthday` | `MM-DD` （**年なし**、例 `04-15`） |
+| デビュー日 | `debutDate` | `YYYY-MM-DD` （例 `2026-04-15`） |
+| ファンネーム | `fanName` | 文字列 |
+| ファンマーク | `fanMark` | 絵文字・文字列 |
+| 配信タグ | `streamTag` | `#` 付き文字列（なしでも表示時に追加） |
+| ファンアートタグ | `fanArtTag` | `#` 付き文字列 |
+| 趣味・好きなこと | `hobbies` | 文字列の配列（例 `["歌","ゲーム"]`） |
+| メンバーカラー | `memberColor` | `#RRGGBB` （例 `#8D79EC`） |
+| カラー名 | `colorName` | 文字列・任意 |
+| 配信スケジュール | `schedule` | 公開用テキスト、改行可 |
+| スケジュールリンク | `scheduleUrl` | `https://` から始まるURL |
+| 自己紹介動画 | `introVideoUrl` | 動画ページの `https://` URL |
+| キャラクターデザイナー | `illustrator` | 活動名・クレジット表記 |
+| 制作者リンク | `illustratorUrl` | `https://` URL |
+
+- **すべて任意**。項目が未入力なら、そのセクションは表示されません。
+- プロフィールに「ABOUT」「基本情報」「ハッシュタグ」「趣味」「配信予定」「自己紹介動画」「制作クレジット」「活動リンク」が自動的に組み立てられます。
+- メンバーカラーは本人用の色として表示し、**期生別のカラーはそのまま維持**します。
+- 動画は自動再生・埋め込みをせず、クリックで外部ページを開く構成です。
+- 生年月日（年付き）、年齢、本名、住所、個人の非公開予定は登録しないでください。
+- 応募フォーム・NEWS・その他のページへの変更はありません。
+
+### Ver.4.2 データ登録例
+
+```js
+window.LIVE_CRAFT_MEMBERS = [
+  {
+    published: true,
+    name: "活動名",
+    generation: 1,
+    role: "メンバー",
+    avatar: "assets/members/icon.webp",
+    fullbody: "assets/members/fullbody.webp",
+    genres: ["ゲーム", "雑談"],
+    bio: "配信への思いを紹介します。",
+    catchphrase: "毎日を、少し面白く。",
+    birthday: "04-15",
+    debutDate: "2026-04-15",
+    fanName: "クラフトメイト",
+    fanMark: "🎮✨",
+    streamTag: "#ライブ配信",
+    fanArtTag: "#ライブFA",
+    hobbies: ["ゲーム", "イラスト"],
+    memberColor: "#8D79EC",
+    colorName: "ラベンダー",
+    schedule: "配信予定はSNSでお知らせします。",
+    scheduleUrl: "https://example.com/schedule",
+    introVideoUrl: "https://www.youtube.com/watch?v=EXAMPLE",
+    illustrator: "イラストレーター名",
+    illustratorUrl: "https://example.com/creator",
+    links: [
+      { label: "YouTube", url: "https://www.youtube.com/@example" },
+      { label: "X", url: "https://x.com/example" }
+    ]
+  }
+];
+```
+
+記入例のURLはダミーです。実際に公開する際は本人から許可を得たURLと素材に差し替えてください。
 
 ## 公開方法
 
@@ -79,11 +146,11 @@ window.LIVE_CRAFT_MEMBERS = [
 
 8期生以降は7色が循環します。配色を増やしたい場合は `assets/members-page.js` の `generationPalette` 配列を変更してください。期生番号は常に文字でも表示されます。
 
-## Ver.4.0/旧Ver.4.1からの更新
+## Ver.4.1からVer.4.2への更新
 
-- 原則すべてのHTMLと `assets` 内のCSS/JS、ブランド画像を置き換えてください。
+- 既にVer.4.1を公開済みの場合は、主に `members.html`、`assets/members-page.js` を更新し、新しい `assets/v42.css` を追加してください。
 - **すでに公開中の `assets/members.js`、`assets/members/`、`assets/news.js`、`assets/config.js` は事前にバックアップし、登録済みデータを新しい版へ移してください。** 上書きで消さないよう注意してください。
-- 新規ファイル：`assets/v41.css`、`assets/v41.js`、`assets/live-craft-lockup.webp`
+- 新規ファイル：`assets/v42.css`（既存の `v41.css` も必要）。
 - ロゴが更新されない場合は、ブラウザーのキャッシュをクリアして再読み込みしてください。
 
 ## 安全な公開のために
@@ -95,7 +162,7 @@ window.LIVE_CRAFT_MEMBERS = [
 - `index.html`：トップ
 - `about.html`：コミュニティについて
 - `activities.html`：活動内容
-- `members.html`：期生別メンバー一覧と立ち絵対応詳細ポップアップ
+- `members.html`：期生別一覧と多項目プロフィール・立ち絵対応詳細ポップアップ
 - `news.html`：お知らせ
 - `join.html`：応募・加入について
 - `faq.html`：FAQ
