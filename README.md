@@ -1,3 +1,56 @@
+# Live Craft Ver.5.1｜GitHub内で完結する管理
+
+**最新の操作手順は [`MANAGEMENT_V5.1.md`](MANAGEMENT_V5.1.md) を参照してください。** 7種のGitHub Actionsフォームから管理し、自動的にサイトを再公開します。個人PATやローカル管理TOOLは不要です。既存の登録済みデータを守るため、更新時はVer.5.1パッチを使用してください。
+
+Ver.5.0.6以前の管理TOOLに関する以下の記述は過去バージョンの参考情報です。
+
+---
+
+# Ver.5.0.6 更新案内：GitHubへのスケジュール自動反映
+
+配信予定管理TOOLでGitHubに接続し、画面から保存した配信予定をGitHubへ直接反映できます。
+通常の `streams.js` の手動書き出しも残しています。
+詳細は **`RELEASE_NOTES_v5.0.6.md`** をご覧ください。
+
+---
+
+# Live Craft 公式サイト Ver.5.0.4
+
+## Ver.5.0.4 主要活動プラットフォームの追加
+
+- `assets/members.js` で `primaryPlatform` を設定すると、メンバー一覧のアイコン下・詳細ポップアップ・個別プロフィールに「主要活動プラットフォーム」を表示します。未設定なら項目は表示しません。
+- `primaryPlatformUrl`（任意）で、主要媒体の配信先URLを指定できます。HTTPSのみ利用できます。未設定でも `links` に主要媒体と同じ名前の有効なリンクがあればそちらを使用します。
+- MEMBERSでは主要活動プラットフォームのプルダウン絞り込みが使えます。ジャンル・期生・キーワード検索と併用可能です。
+- 同じ意味の `youtube` / `YouTube Live` は `YouTube` へ、`tiktok` は `TikTok LIVE` へ正規化します。YouTube、Twitch、TikTok LIVE、IRIAM、REALITY、Mirrativ、ツイキャス、ニコニコ生放送、SHOWROOMなどを指定できます。その他の文字列も登録できます。
+- **`links` を見て主要媒体を自動決定することはありません。** 事務所・期生とは独立した項目です。
+- 既存の `avatar`・`fullbody` の役割は変わりません。
+
+メンバー登録例（`assets/members.js` の配列の各要素に追記）：
+
+```js
+{
+  id: "sample-streamer",
+  published: true,
+  name: "活動名",
+  generation: 1,
+  agency: "個人勢",
+  primaryPlatform: "YouTube",
+  primaryPlatformUrl: "https://www.youtube.com/@your-channel",
+  avatar: "assets/members/icon.webp",
+  fullbody: "assets/members/standing.webp",
+  genres: ["ゲーム"],
+  links: [{label:"YouTube",url:"https://www.youtube.com/@your-channel"}]
+}
+```
+
+**更新パッチを適用する場合：** 既存の `assets/members.js` は上書きせず、各メンバーに `primaryPlatform` と任意の `primaryPlatformUrl` を追記してください。管理ツールは `tools/content-manager.html` です。実在するメンバーの情報は本人の同意が得られた範囲のみ登録してください。
+
+---
+
+# Live Craft Ver.5.0.3
+
+Ver.5.0.2のメンバー画像表示保護を追加しています。`RELEASE_NOTES_v5.0.3.md` を参照してください。
+
 # Live Craft 公式サイト Ver.5.0.2（所属事務所表示対応）
 
 Ver.5.0.1の全ページ・日英UI・配信予定機能を維持し、メンバー一覧・プロフィールに任意の所属事務所項目を追加しました。以下に前版の更新履歴も残しています。
@@ -403,3 +456,29 @@ window.LIVE_CRAFT_MEMBERS = [
 ### Ver.5.0.1から更新するとき
 
 `assets/members.js`、`assets/news.js`、`assets/streams.js`、`assets/config.js` などの既存の公開データを保護するため、**更新パッチ**には上記の登録済みデータファイルを含めていません。パッチを上書き後、既存の `assets/members.js` に `agency` を追記してください。
+
+
+## メンバー画像の正しい登録方法（Ver.5.0.3）
+
+- `avatar`: メンバー一覧・トップのピックアップ・LIVE予定カードに表示する**正方形の顔アップ画像**（例：`assets/members/haru-icon.webp`）
+- `fullbody`: メンバー詳細・個別プロフィールだけに表示する**全身の立ち絵**（例：`assets/members/haru-fullbody.webp`）
+- 同じ画像ファイルを `avatar` と `fullbody` の両方に指定しないでください。
+- `avatar` が未登録、無効なパス、または `fullbody` と同じパスの場合は、一覧で全身画像を代用せず、イニシャル等の代替表示になります。
+- 管理ツール `tools/content-manager.html` は画像パスの違いを検証し、同じパスの場合に保存時エラーを表示します。
+- 既存データの `avatar` が全身画像を指している場合は、アイコン画像を別途用意してパスを書き換えてください。サイトは人物画像を自動判別できません。
+
+```js
+{
+  name: '活動名',
+  avatar: 'assets/members/member-icon.webp',      // 一覧専用：正方形
+  fullbody: 'assets/members/member-standing.webp' // 詳細専用：縦長
+}
+```
+
+画像パスが分からなくなった場合は `tools/content-manager.html` のアイコン・立ち絵プレビューでそれぞれの参照先を確認してください。
+
+## Ver.5.0.5（週間配信スケジュール表示修正）
+
+`schedule.html` で `members.js` / `member-routing.js` が読み込まれず、配信予定が表示されない不具合を修正しました。Ver.5.0.4からは `schedule.html` だけの差し替えで対応できます。詳細は `RELEASE_NOTES_v5.0.5.md` をご覧ください。
+
+確認用：`node tests/schedule-page.test.cjs`
