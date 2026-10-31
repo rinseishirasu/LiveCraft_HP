@@ -83,3 +83,14 @@ Object.assign(window.LC_TRANSLATIONS,{
   '所属事務所':'Agency',
   '個人勢':'Independent'
 });
+
+/* Ver.5.0.4: primary activity platform and list filter translations. */
+Object.assign(window.LC_TRANSLATIONS,{
+  '主要活動プラットフォーム':'Primary streaming platform',
+  '主要活動プラットフォームで絞り込む':'Filter by primary platform',
+  'すべてのプラットフォーム':'All platforms',
+  '配信先へ ↗':'Visit main channel ↗',
+  '期生・ジャンル・主要活動プラットフォームの絞り込みと組み合わせて検索できます。':'Combine search with generation, genre, and platform filters.',
+  '活動名・事務所名・プラットフォームなど':'Name, agency, or platform',
+  '配信先を開く（新しいタブ）':'Open main channel (new tab)'
+});

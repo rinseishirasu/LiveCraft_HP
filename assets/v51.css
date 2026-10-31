@@ -57,3 +57,29 @@ body.version-five .profile-agency-name {font-weight:850;font-size:.88rem;overflo
   body.version-five .member-list-agency-name{font-size:.67rem}
   body.version-five .profile-agency{width:auto;padding:8px 12px;}
 }
+
+
+/* Ver.5.0.4: primary activity platform in lists, profiles and filters. */
+body.version-five .lc504-filter-controls {display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px 20px;}
+body.version-five .lc504-filter-controls .member-filter {display:flex;gap:8px;align-items:center;}
+body.version-five .lc504-platform-filter {display:flex;align-items:center;gap:10px;color:#625889;font-size:.81rem;}
+body.version-five .lc504-platform-filter[hidden]{display:none!important;}
+body.version-five .lc504-platform-filter label{color:#5f5488;font-size:.81rem;font-weight:800;}
+body.version-five .lc504-platform-filter select {min-height:43px;min-width:185px;max-width:260px;border-radius:14px;border:1px solid #d9d2f1;background:#fff;color:#3e345f;padding:9px 34px 9px 13px;font:inherit;cursor:pointer;}
+body.version-five .lc504-platform-filter select:focus-visible{outline:3px solid #8570ef;outline-offset:2px;}
+body.version-five .member-list-platform {margin:9px auto 0;display:flex;justify-content:center;align-items:center;gap:7px;width:fit-content;max-width:100%;padding:6px 11px;border-radius:999px;color:#5646a6;background:#f0ecff;border:1px solid #ddd4fd;font-size:.7rem;font-weight:900;overflow-wrap:anywhere;text-align:center;line-height:1.3;}
+body.version-five .member-list-platform-dot {height:7px;width:7px;flex:none;border-radius:50%;background:var(--gen-accent,#7456e8)}
+body.version-five .profile-primary-platform {display:inline-flex;align-items:center;flex-wrap:wrap;gap:6px 10px;max-width:100%;padding:10px 14px;border:1px solid #cbdafc;border-radius:16px;background:linear-gradient(110deg,#ecf4ff,#f7f1ff);color:#332d63;line-height:1.55;}
+body.version-five .profile-primary-platform-label {font-size:.7rem;font-weight:900;letter-spacing:.02em;color:#5a61a0;}
+body.version-five .profile-primary-platform-name {font-size:.93rem;font-weight:950;overflow-wrap:anywhere;}
+body.version-five .profile-primary-platform-link {font-size:.73rem;font-weight:900;text-decoration:none;color:#5b45d1;background:#fff;padding:4px 9px;border-radius:999px;border:1px solid #d8d2f5;}
+body.version-five .profile-primary-platform-link:hover{text-decoration:underline;color:#382a9a;}
+body.version-five .profile-primary-platform-link:focus-visible{outline:2px solid #6b57dd;outline-offset:2px;}
+@media(max-width:700px){
+  body.version-five .lc504-filter-controls{width:100%;flex-direction:column;align-items:stretch;gap:12px;}
+  body.version-five .lc504-filter-controls .member-filter, body.version-five .lc504-platform-filter{width:100%;justify-content:space-between;}
+  body.version-five .lc504-filter-controls select{max-width:65%;min-width:0;}
+  body.version-five .member-list-platform{font-size:.59rem;padding:5px 7px;margin-top:7px;}
+  body.version-five .member-list-platform-dot{height:6px;width:6px;}
+  body.version-five .profile-primary-platform{padding:8px 11px;}
+}

@@ -1,0 +1,233 @@
+name: "Live Craft | 既存データ確認・ID補完"
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "確認だけ／旧データのID未設定箇所を補完"
+        required: true
+        type: choice
+        options:
+          - inspect
+          - migrate
+        default: inspect
+      resource:
+        description: "確認・補完するデータの種類"
+        required: true
+        type: choice
+        options:
+          - all
+          - members
+          - streams
+          - news
+          - videos
+          - events
+          - collabs
+          - recruitment
+        default: all
+      query:
+        description: "既存データを検索（inspectのみ／名前・ID・事務所など）"
+        required: false
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: livecraft-publish-${{ github.repository }}
+  cancel-in-progress: false
+jobs:
+  inspect:
+    if: ${{ inputs.mode == 'inspect' }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout latest default branch
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+      - name: Verify required repository files before execution
+        shell: bash
+        run: |
+          required=(
+            scripts/manage_content.cjs
+            scripts/legacy_inventory.cjs
+            scripts/build_site.py
+            tests/_fixtures.cjs
+            tests/data-format.test.cjs
+            tests/legacy-inventory.test.cjs
+            tests/manage-content.test.cjs
+            tests/streams.test.cjs
+            tests/schedule-page.test.cjs
+            tests/member-icon.test.cjs
+            tests/platforms.test.cjs
+          )
+          missing=0
+          for item in "${required[@]}"; do
+            if [[ ! -f "$item" ]]; then
+              echo "::error file=$item::Missing $item. Copy the full tests/ directory from the Ver.5.1.6 patch to the repository root. If a script is missing, obtain it from the Ver.5.1.6 full package."
+              echo "MISSING: $item"
+              missing=1
+            fi
+          done
+          if [[ "$missing" -ne 0 ]]; then
+            {
+              echo '## Live Craft: 管理・テスト用ファイルが不足しています'
+              echo 'エラーで表示されたパスに、Ver.5.1.6 パッチのファイルをアップロードしてください。'
+              echo '保存先はリポジトリ直下の `tests/` と `scripts/` です。'
+              echo 'アップロード後、コミットしてから Actions を新規実行してください。'
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          echo 'PASS: All required Live Craft scripts and tests are present.'
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - name: Find existing record IDs
+        env:
+          MODE: inspect
+          RESOURCE: ${{ inputs.resource }}
+          QUERY: ${{ inputs.query }}
+          REPORT_JSON: ${{ runner.temp }}/livecraft-existing-data.json
+        run: node scripts/legacy_inventory.cjs
+      - name: Downloadable inventory (public-site data only)
+        uses: actions/upload-artifact@v4
+        with:
+          name: livecraft-existing-data
+          path: ${{ runner.temp }}/livecraft-existing-data.json
+          retention-days: 7
+      - name: Failure guidance for inventory
+        if: ${{ failure() }}
+        run: |
+          {
+            echo '## 既存データ確認に失敗しました'
+            echo '失敗したステップ内の最初の ERROR と、JSON の形式・ID 重複を確認してください。'
+            echo '詳細: ACTIONS_ERROR_GUIDE.md'
+          } >> "$GITHUB_STEP_SUMMARY"
+  migrate_build:
+    if: ${{ inputs.mode == 'migrate' }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      pages: write
+    steps:
+      - name: Checkout latest default branch
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Verify required repository files before execution
+        shell: bash
+        run: |
+          required=(
+            scripts/manage_content.cjs
+            scripts/legacy_inventory.cjs
+            scripts/build_site.py
+            tests/_fixtures.cjs
+            tests/data-format.test.cjs
+            tests/legacy-inventory.test.cjs
+            tests/manage-content.test.cjs
+            tests/streams.test.cjs
+            tests/schedule-page.test.cjs
+            tests/member-icon.test.cjs
+            tests/platforms.test.cjs
+          )
+          missing=0
+          for item in "${required[@]}"; do
+            if [[ ! -f "$item" ]]; then
+              echo "::error file=$item::Missing $item. Copy the full tests/ directory from the Ver.5.1.6 patch to the repository root. If a script is missing, obtain it from the Ver.5.1.6 full package."
+              echo "MISSING: $item"
+              missing=1
+            fi
+          done
+          if [[ "$missing" -ne 0 ]]; then
+            {
+              echo '## Live Craft: 管理・テスト用ファイルが不足しています'
+              echo 'エラーで表示されたパスに、Ver.5.1.6 パッチのファイルをアップロードしてください。'
+              echo '保存先はリポジトリ直下の `tests/` と `scripts/` です。'
+              echo 'アップロード後、コミットしてから Actions を新規実行してください。'
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          echo 'PASS: All required Live Craft scripts and tests are present.'
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Add missing IDs without changing existing fields
+        env:
+          MODE: migrate
+          RESOURCE: ${{ inputs.resource }}
+          QUERY: ${{ inputs.query }}
+        run: node scripts/legacy_inventory.cjs
+      - name: Run regression tests
+        run: |
+          node tests/legacy-inventory.test.cjs
+          node tests/manage-content.test.cjs
+          node tests/data-format.test.cjs
+          node tests/streams.test.cjs
+          node tests/schedule-page.test.cjs
+          node tests/member-icon.test.cjs
+          node tests/platforms.test.cjs
+      - name: Commit only existing public-data sources
+        run: |
+          git add -- assets/members.js assets/streams.js assets/news.js assets/videos.js assets/events.js assets/collabs.js
+          if ! git diff --cached --quiet; then
+            git -c user.name='github-actions[bot]' \
+                -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+                commit -m 'chore(content): assign missing legacy record IDs'
+            git push origin "HEAD:${{ github.event.repository.default_branch }}"
+          else
+            echo 'No legacy changes are needed.'
+          fi
+      - name: Install image optimizer
+        run: python -m pip install --disable-pip-version-check "Pillow>=11,<13"
+      - name: Configure Pages
+        id: pages
+        uses: actions/configure-pages@v5
+      - name: Build site
+        env:
+          PAGES_BASE_URL: ${{ steps.pages.outputs.base_url }}
+        run: python scripts/build_site.py --output _site
+      - name: Upload Pages build
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+      - name: Failure guidance (see failed step above)
+        if: ${{ failure() }}
+        run: |
+          {
+            echo '## Live Craft: 実行に失敗しました'
+            echo '赤い × が付いたステップを展開し、exit code 1 より上の最初の ERROR / Error を確認してください。'
+            echo '- Update / tests: 入力値、対象ID、日時、データ形式を確認'
+            echo '- Commit validated change: Actions の Contents 書込権限、ブランチ保護・ruleset を確認'
+            echo '- Build / Upload Pages: Python/Pillow のエラーと Pages 設定を確認'
+            echo '詳細: リポジトリの ACTIONS_ERROR_GUIDE.md'
+          } >> "$GITHUB_STEP_SUMMARY"
+  deploy:
+    if: ${{ inputs.mode == 'migrate' }}
+    needs: migrate_build
+    runs-on: ubuntu-24.04
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+      - name: Failure guidance for deployment
+        if: ${{ failure() }}
+        run: |
+          {
+            echo '## GitHub Pages 公開に失敗しました'
+            echo '赤い × の Deploy ステップを確認してください。'
+            echo 'Settings → Pages → Source = GitHub Actions、environment の承認条件、Pages / id-token 権限を確認してください。'
+            echo '詳細: ACTIONS_ERROR_GUIDE.md'
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,24 @@
+/* Ver.5.0.4 main platform selection and safe linking tests */
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const vm = require('node:vm');
+const scope = {window:{},URL};
+vm.runInNewContext(fs.readFileSync(path.join(__dirname,'..','assets','platform-utils.js'),'utf8'),scope);
+const p = scope.window.LiveCraftPlatforms;
+assert.equal(p.canonical(' youtube live '),'YouTube');
+assert.equal(p.canonical('TWITCH'),'Twitch');
+assert.equal(p.canonical('tiktok'),'TikTok LIVE');
+assert.equal(p.canonical('ツイキャス'),'ツイキャス');
+assert.equal(p.canonical(' CustomLIVE '),'CustomLIVE');
+assert.equal(p.primary({links:[{label:'YouTube',url:'https://www.youtube.com/@demo'}]}),'');
+assert.equal(p.mainUrl({primaryPlatform:'YouTube',links:[{label:'YouTube',url:'https://www.youtube.com/@demo'}]}),'https://www.youtube.com/@demo');
+assert.equal(p.mainUrl({primaryPlatform:'YouTube',primaryPlatformUrl:'javascript:alert(1)'}),null);
+assert.equal(p.mainUrl({primaryPlatform:'Twitch',links:[{label:'YouTube',url:'https://www.youtube.com/@demo'}]}),null);
+assert.equal(p.mainUrl({primaryPlatform:'Twitch',primaryPlatformUrl:'https://www.twitch.tv/example'}),'https://www.twitch.tv/example');
+const members=[{primaryPlatform:'YouTube'},{primaryPlatform:'youtube live'},{primaryPlatform:'Twitch'},{primaryPlatform:''}];
+assert.deepEqual(Array.from(p.options(members)),['Twitch','YouTube']);
+assert.equal(members.filter(m=>p.matches(m,'YouTube')).length,2);
+assert.equal(members.filter(m=>p.matches(m,'all')).length,4);
+assert.equal(members.filter(m=>p.matches(m,'Twitch')).length,1);
+console.log('Primary platform tests passed');

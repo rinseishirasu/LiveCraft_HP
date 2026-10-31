@@ -1,3 +1,5 @@
+> **Ver.5.1.1からの追記：** 既存のID確認・旧データのID補完は `Actions → Live Craft | 既存データ確認・ID補完` を使用します。詳細は [`RELEASE_NOTES_v5.1.1.md`](RELEASE_NOTES_v5.1.1.md) を参照してください。
+
 # Live Craft Ver.5.1｜GitHub Actions内で完結する管理マニュアル
 
 ## 目的と対象
