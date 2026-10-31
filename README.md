@@ -1,4 +1,56 @@
-# Live Craft 公式サイト Ver.4.2
+# Live Craft 公式サイト Ver.4.3
+
+**Ver.4.2を引き継いだGitHub Pages対応版。ビルド不要・公開データは未登録です。**
+
+## Ver.4.3 で追加した機能
+
+1. **メンバー個別ページ** `member.html?id=member-id`：ブラウザで直接開ける専用プロフィール。既存の詳細ポップアップの「プロフィール専用ページ」から遷移でき、立ち絵・自己紹介・ファン情報・活動リンクなどVer.4.2の全項目を表示します。
+2. **メンバー検索**：`members.html`で活動名・キャッチコピー・自己紹介・ジャンル・役割・活動媒体名を検索。期生フィルター・ジャンルフィルターと併用可能。検索対象は`published: true`の人だけです。
+3. **ピックアップメンバー**：トップのメンバーカードに `featured: true` を設定した公開メンバーを優先表示（最大4名）。誰にも付けていない場合は公開メンバーの先頭から最大4名を表示。公開メンバーがゼロなら従来の準備中表示。
+4. **共有機能**：詳細ポップアップと個別ページからXにシェア、または個別ページのURLをコピーできます。専用URLはGitHub Pagesの通常リポジトリ配下でも動く相対URLから生成します。
+5. **メンバーカラー連動**：本人が`memberColor: "#RRGGBB"`を設定すると、アイコンの差し色や個別ページのトップボーダー・背景グローが変化。期生別カラー・バッジは維持します。
+
+### 追加するメンバーデータ（`assets/members.js`）
+
+```js
+window.LIVE_CRAFT_MEMBERS = [
+  {
+    published: true,           // 本人に掲載同意を確認した場合のみ
+    id: "sample-luna",         // 個別URLで使う、永続的なID（推奨）
+    featured: true,            // トップのPICK UPで優先表示（任意）
+    name: "活動名",
+    generation: 1,
+    role: "メンバー",
+    avatar: "assets/members/icon.webp",
+    fullbody: "assets/members/standing.webp",
+    genres: ["ゲーム", "雑談"],
+    memberColor: "#8265EA",    // 任意・個別テーマのアクセント
+    bio: "自己紹介文",
+    links: [{ label: "YouTube", url: "https://www.youtube.com/@example" }]
+  }
+];
+```
+
+**IDの決め方**：英小文字・数字・ハイフンで、1〜60文字（先頭は英数字）。例：`yume-01`, `hikari`, `member-003`。人ごとに重複しない固定IDにしてください。一度公開したIDを変更すると、古いプロフィールURLが使えなくなります。`id`を省略した場合は期生と名前からURLが自動生成されますが、改名や期生の修正でリンクが変わるため、正式公開ではID指定を推奨します。
+
+**URLの例**：`https://YOURNAME.github.io/live-craft/member.html?id=sample-luna`。実際のURLはGitHub Pagesの公開先によって変わります。
+
+**共有画像についての制約**：個別プロフィールの表示・共有リンクは機能しますが、`member.html?id=...` は静的HTMLが共通のため、XなどのSNSで共有した際のOGPプレビュー画像は全メンバー共通のLive Craft画像です。個人別OGPが必要な場合は、別途ページ生成の仕組みが必要です。
+
+### Ver.4.2からのアップデート手順
+
+- **必ずバックアップ**：`assets/members.js`、`assets/members/`、`assets/news.js`、`assets/config.js`、および編集した全ファイル。
+- Ver.4.3のサイト一式をアップロード後、バックアップした登録済みデータを戻してください。
+- 新規ファイル：`member.html`、`assets/member-routing.js`、`assets/profile-ui.js`、`assets/member-detail.js`、`assets/member-search-ui.js`、`assets/v43-home.js`、`assets/v43.css`。
+- 更新ファイル：`index.html`、`members.html`、`assets/members-page.js`、`assets/members.js`（記入例のみ）、および各HTMLのCSS参照。
+- 他のページ・NEWS・FAQ・募集・規約機能は従来通りです。立ち絵も引き続き任意で、未登録時はアイコンを代替表示します。
+
+**安全性**：公開メンバーデータだけを使用し、未公開データは検索・詳細・トップの表示対象から除外します。個人情報や非公開の審査資料をGitHubリポジトリに保存しないでください。素材の掲載許諾を確認してください。
+
+---
+
+## Ver.4.2以前の基本仕様
+
 
 **テーマ：ONE COMMUNITY. MANY COLORS.**
 

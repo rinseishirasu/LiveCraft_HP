@@ -43,6 +43,8 @@
   const generationChip = generation => generation == null ? 'GEN ?' : `GEN ${String(generation).padStart(2, '0')}`;
   const generations = [...new Set(members.map(generationOf))].sort((a, b) => a == null ? 1 : b == null ? -1 : a - b);
   let activeGeneration = 'all';
+  let searchTerm = '';
+  const searchInput = document.getElementById('member-search');
 
   const genres = [...new Set(members.flatMap(m => Array.isArray(m.genres) ? m.genres.filter(g => typeof g === 'string' && g.trim()) : []))];
   if (genres.length > 1) {
@@ -145,6 +147,7 @@
   const showProfile = (member, trigger) => {
     triggerButton = trigger;
     const layout = node('div', 'profile-layout');
+    if (publicColor(member.memberColor)) layout.style.setProperty('--member-personal-color', publicColor(member.memberColor));
     const side = node('div', 'profile-art');
     const visualCard = applyTheme(node('div', 'profile-visual-card'), generationOf(member));
     visualCard.append(node('span', 'profile-visual-kicker', `GENERATION ${generationOf(member) == null ? '—' : String(generationOf(member)).padStart(2,'0')}`));
@@ -320,6 +323,22 @@
     body.append(linksSection);
 
     layout.append(side, body);
+    const actions = node('div', 'lc43-modal-actions');
+    const profileLink = node('a', 'lc43-action-main', 'プロフィール専用ページ ↗');
+    profileLink.href = window.LiveCraftMembers.urlFor(member);
+    actions.append(profileLink);
+    const share = node('a', 'lc43-action-share', 'Xで共有 ↗');
+    share.href = window.LiveCraftMembers.xShare(member);
+    share.target = '_blank'; share.rel = 'noopener noreferrer';
+    actions.append(share);
+    const copy = node('button', 'lc43-action-copy', 'URLをコピー');
+    copy.type = 'button';
+    copy.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(profileLink.href); copy.textContent='コピーしました'; }
+      catch { copy.textContent='URLを選択してコピーしてください'; }
+    });
+    actions.append(copy);
+    body.append(actions);
     dialogContent.replaceChildren(layout);
     dialog.showModal();
     document.body.classList.add('modal-open');
@@ -339,6 +358,7 @@
   const makeIcon = member => {
     const item = applyTheme(node('li', 'member-icon-item'), generationOf(member));
     const button = applyTheme(node('button', 'member-icon-button'), generationOf(member));
+    if (publicColor(member.memberColor)) button.style.setProperty('--member-personal-color', publicColor(member.memberColor));
     button.type = 'button';
     button.setAttribute('aria-label', `${member.name}（${generationLabel(generationOf(member))}）のプロフィールを見る`);
     button.setAttribute('aria-haspopup', 'dialog');
@@ -392,7 +412,14 @@
 
   const render = () => {
     const genre = filter.value;
-    const byGenre = genre === 'all' ? members : members.filter(m => Array.isArray(m.genres) && m.genres.includes(genre));
+    const normalized = s => String(s ?? '').normalize('NFKC').toLocaleLowerCase('ja');
+    const candidates = members.filter(m => {
+      const searchable = [m.name,m.catchphrase,m.bio,m.role,m.fanName,
+        ...(Array.isArray(m.genres)?m.genres:[]),
+        ...(Array.isArray(m.links)?m.links.map(l=>l?.label):[])].join(' ');
+      return !searchTerm || normalized(searchable).includes(searchTerm);
+    });
+    const byGenre = genre === 'all' ? candidates : candidates.filter(m => Array.isArray(m.genres) && m.genres.includes(genre));
     const buttons = [makeGenerationControl('all', 'すべて', byGenre.length)];
     generations.forEach(generation => {
       const value = generation == null ? 'unassigned' : String(generation);
@@ -420,5 +447,9 @@
   generationToolbar.hidden = false;
   resultStatus.hidden = false;
   filter.addEventListener('change', render);
+  searchInput?.addEventListener('input', event => {
+    searchTerm = String(event.target.value || '').normalize('NFKC').toLocaleLowerCase('ja').trim();
+    render();
+  });
   render();
 })();
