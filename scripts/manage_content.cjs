@@ -18,6 +18,7 @@ const SOURCES = Object.freeze({
   videos: ['assets/videos.js', 'LIVE_CRAFT_VIDEOS'],
   events: ['assets/events.js', 'LIVE_CRAFT_EVENTS'],
   collabs: ['assets/collabs.js', 'LIVE_CRAFT_COLLABS'],
+  projects: ['assets/projects.js', 'LIVE_CRAFT_PROJECTS'],
   recruitment: ['assets/config.js', 'LIVE_CRAFT_CONFIG']
 });
 const FIELDS = Object.freeze({
@@ -26,10 +27,11 @@ const FIELDS = Object.freeze({
   news: { title:'string', date:'date', category:'string', summary:'string', body:'paragraphs', members:'csv', link:'url', thumbnail:'image:news', publishAt:'datetime' },
   videos: { title:'string', member:'string', platform:'string', category:'string', date:'date', url:'url', thumbnail:'image:videos', description:'string', featured:'boolchoice', publishAt:'datetime' },
   events: { title:'string', date:'date', time:'time', type:'string', description:'string', members:'csv', url:'url', thumbnail:'image:events', publishAt:'datetime' },
-  collabs: { title:'string', date:'date', category:'string', description:'string', members:'csv', url:'url', thumbnail:'image:collabs', publishAt:'datetime' }
+  collabs: { title:'string', date:'date', category:'string', description:'string', members:'csv', url:'url', thumbnail:'image:collabs', publishAt:'datetime' },
+  projects: {title:'string', summary:'string', description:'string', status:'projectStatus', category:'string', cover:'image:projects', members:'csv', relatedVideos:'csv', relatedCollabs:'csv', startDate:'date', externalUrl:'url', featured:'boolchoice', publishAt:'datetime'}
 });
 const MEMBER_EXTRA_FIELDS = Object.freeze({
-  catchphrase:'string', birthday:'birthday', debutDate:'date', fanName:'string', fanMark:'string', streamTag:'string', fanArtTag:'string', hobbies:'csvOrArray', memberColor:'hex', colorName:'string', schedule:'string', scheduleUrl:'url', introVideoUrl:'url', illustrator:'string', illustratorUrl:'url', links:'links', featured:'boolean', genres:'arrayStrings', bio:'string', role:'string', agency:'string', primaryPlatform:'string', primaryPlatformUrl:'url', avatar:'image:members', fullbody:'image:members'
+  outfits:'outfits', catchphrase:'string', birthday:'birthday', debutDate:'date', fanName:'string', fanMark:'string', streamTag:'string', fanArtTag:'string', hobbies:'csvOrArray', memberColor:'hex', colorName:'string', schedule:'string', scheduleUrl:'url', introVideoUrl:'url', illustrator:'string', illustratorUrl:'url', links:'links', featured:'boolean', genres:'arrayStrings', bio:'string', role:'string', agency:'string', primaryPlatform:'string', primaryPlatformUrl:'url', avatar:'image:members', fullbody:'image:members'
 });
 const RECORD_IDS = /^[a-z0-9][a-z0-9-]{0,63}$/;
 function fail(message) { throw new Error(message); }
@@ -90,6 +92,14 @@ function parseField(value, type, field) {
     return s;
   }
   if (type==='hex') { const s=str(value,field,7); if(!/^#[0-9a-fA-F]{6}$/.test(s)) fail(`${field}: use #RRGGBB`); return s; }
+  if (type==='outfits') {
+    if(!Array.isArray(value) || value.length>8) fail('outfits must be an array (max 8)');
+    return value.map(item=>{
+      if(!item || typeof item!=='object' || Array.isArray(item)) fail('each outfit must be an object');
+      return {label:str(item.label||'','outfit.label',60),image:parseField(item.image,'image:members','outfit.image')};
+    });
+  }
+  if (type==='projectStatus') { const s=str(value,field,16);if(!['upcoming','ongoing','completed'].includes(s))fail('projectStatus: use upcoming/ongoing/completed');return s; }
   if (type==='status') { const s=str(value,field,20); if(!['scheduled','cancelled','postponed','ended'].includes(s)) fail('invalid status'); return s; }
   if (type==='boolean') { if(typeof value!=='boolean') fail(`${field}: boolean required`); return value; }
   if (type==='boolchoice') { if(value==='keep') return undefined; if(value==='true'||value===true)return true; if(value==='false'||value===false)return false;fail(`${field}: expected true/false/keep`); }

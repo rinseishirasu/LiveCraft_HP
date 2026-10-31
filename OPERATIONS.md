@@ -1,3 +1,7 @@
+## Ver.6.1 運営方法
+
+公開企画はGitHub Actionsの`Live Craft | PROJECTS管理`から更新してください。内部ナレッジ、参加者の未公開情報、内部企画資料は掲載しません。詳細は`START_HERE_V6.1.md`。
+
 > **既存登録データの操作（Ver.5.1.1）**：Actionsの「既存データ確認・ID補完」でIDを検索し、管理フォームで同じIDを指定して部分更新できます。旧形式のID未設定データは安全に補完できます。`RELEASE_NOTES_v5.1.1.md` 参照。
 
 # Live Craft 運営マニュアル Ver.5.1

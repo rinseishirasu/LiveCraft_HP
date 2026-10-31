@@ -3,7 +3,7 @@
 // real repository data, but makes NO assumptions about names, order or count.
 const assert = require('node:assert/strict');
 const {readData} = require('../scripts/manage_content.cjs');
-for (const resource of ['members','news','events','videos','collabs','streams']) {
+for (const resource of ['members','news','events','videos','collabs','projects','streams']) {
   const rows = readData(resource);
   assert.ok(Array.isArray(rows), `${resource} must be an array`);
   for (const row of rows) {

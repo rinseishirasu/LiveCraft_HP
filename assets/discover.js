@@ -12,13 +12,14 @@
  const controls=document.querySelector('[data-lc6-discover-tabs]');
  const summary=document.querySelector('[data-lc6-discover-summary]');
  const empty=document.querySelector('[data-lc6-discover-empty]');
- const tabs=['all','member','news','video','event','collab'];
- const names={all:['すべて','All'],member:['メンバー','Members'],news:['NEWS','News'],video:['動画','Videos'],event:['イベント','Events'],collab:['コラボ','Collabs']};
+ const tabs=['all','member','news','video','event','collab','project'];
+ const names={all:['すべて','All'],member:['メンバー','Members'],news:['NEWS','News'],video:['動画','Videos'],event:['イベント','Events'],collab:['コラボ','Collabs'],project:['企画','Projects']};
  const source=(key)=>C.records(key);
  const memberItems=M.publicMembers().map(m=>({kind:'member',title:m.name,subtitle:[m.agency,m.primaryPlatform,m.genres?.join('・')].filter(Boolean).join(' / '),description:[m.bio,m.catchphrase,m.fanName].filter(Boolean).join(' '),url:M.urlFor(m),date:'',image:M.safeProfileIcon(m),terms:[m.name,m.agency,m.primaryPlatform,m.bio,m.catchphrase,m.role,...(m.genres||[]),...(m.hobbies||[])].join(' ')}));
  const newsItems=source('LIVE_CRAFT_NEWS').filter(x=>x.title).map(x=>({kind:'news',title:x.title,subtitle:x.category||'',description:x.summary||'',date:x.date||'',url:safeId(x.id)?'news-article.html?id='+encodeURIComponent(x.id):'news.html',image:C.thumb(x.thumbnail),terms:[x.title,x.summary,x.category,...(Array.isArray(x.body)?x.body:[])].join(' ')}));
  const other=(key,kind,fallback)=>source(key).filter(x=>x.title).map(x=>({kind,title:x.title,subtitle:[x.platform,x.category,x.type].filter(Boolean).join(' / '),description:x.description||'',date:x.date||'',url:safeExternal(x.url)||fallback,image:C.thumb(x.thumbnail),terms:[x.title,x.description,x.member,x.platform,x.category,x.type,...(Array.isArray(x.members)?x.members:[])].filter(Boolean).join(' ')}));
- const records=[...memberItems,...newsItems,...other('LIVE_CRAFT_VIDEOS','video','videos.html'),...other('LIVE_CRAFT_EVENTS','event','events.html'),...other('LIVE_CRAFT_COLLABS','collab','collabs.html')];
+ const projectItems=source('LIVE_CRAFT_PROJECTS').filter(x=>x.title&&safeId(x.id)).map(x=>({kind:'project',title:x.title,subtitle:[x.category,x.status].filter(Boolean).join(' / '),description:x.summary||x.description||'',date:x.startDate||'',url:'project.html?id='+encodeURIComponent(x.id),image:C.thumb(x.cover),terms:[x.title,x.summary,x.description,x.category,...(Array.isArray(x.members)?x.members:[])].join(' ')}));
+ const records=[...projectItems,...memberItems,...newsItems,...other('LIVE_CRAFT_VIDEOS','video','videos.html'),...other('LIVE_CRAFT_EVENTS','event','events.html'),...other('LIVE_CRAFT_COLLABS','collab','collabs.html')];
  let kind=tabs.includes(params.get('kind'))?params.get('kind'):'all';
  let query=(params.get('q')||'').slice(0,140);if(qInput)qInput.value=query;
  const norm=s=>String(s||'').normalize('NFKC').toLocaleLowerCase('ja').trim();
