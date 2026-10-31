@@ -1,3 +1,15 @@
+## `Cannot find module .../tests/data-format.test.cjs` の場合（Ver.5.1.6）
+
+このエラーは Node.js のバージョンではなく、**GitHub リポジトリのルート直下に `tests/data-format.test.cjs` が存在しない**ことを示します。
+Ver.5.1.5 の ZIP にこのファイルは含まれていますが、GitHub へのアップロード漏れがあると発生します。
+
+1. GitHub の `Code` → `tests` を開いて `data-format.test.cjs` があるか確認します。
+2. 存在しなければ、Ver.5.1.6 パッチの `tests/` 内にある **全ファイル** を、リポジトリの同じ `tests/` へアップロードします。`tests/tests/` などの二重階層にしないでください。
+3. `.github/workflows/` の修正版も同じ階層に上書きし、コミットします。
+4. GitHub Actions で **新しい実行**を開始します。古い失敗ジョブの「Re-run jobs」は、過去のコミットを使うため避けてください。
+
+Ver.5.1.6 からは、必要ファイルに不足がある場合、Actions が最初に不足パスをまとめて表示します。メンバー・NEWS・配信予定のデータを変更する必要はありません。
+
 # Live Craft Ver.5.1.3｜GitHub Actionsエラー対処ガイド
 
 ## ① Node.js 20 is deprecated
