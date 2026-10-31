@@ -1,4 +1,4 @@
-/* Live Craft メンバー公開用データ (Ver.3.1)
+/* Live Craft メンバー公開用データ (Ver.4.1)
  * 本人が公開に同意したプロフィール「のみ」を記載してください。
  * 公開ファイルは誰でも閲覧でき、Gitの履歴にも残る場合があります。
  * 本名、誕生日、住所、非公開Discord、審査情報などは書かないでください。
@@ -15,7 +15,8 @@
  *   role: "メンバー",             // 代表 / 運営 / メンバー、省略可
  *   genres: ["ゲーム", "雑談"],
  *   bio: "配信活動や自己紹介を記入してください。",
- *   avatar: "assets/members/profile-01.webp",
+ *   avatar: "assets/members/profile-01.webp", // 一覧用正方形アイコン
+ *   fullbody: "assets/members/fullbody-01.webp", // 任意：透過背景の立ち絵（縦長推奨）
  *   links: [
  *     {label: "YouTube", url: "https://www.youtube.com/@your-channel"},
  *     {label: "X", url: "https://x.com/your-account"}
