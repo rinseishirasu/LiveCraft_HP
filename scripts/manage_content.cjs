@@ -23,9 +23,9 @@ const SOURCES = Object.freeze({
 const FIELDS = Object.freeze({
   streams: { memberId:'string', title:'string', platform:'string', streamUrl:'url', startAt:'datetimeJst', endAt:'datetimeJst', status:'status', thumbnail:'image:streams' },
   members: { name:'string', generation:'generation', role:'string', agency:'string', primaryPlatform:'string', primaryPlatformUrl:'url', avatar:'image:members', fullbody:'image:members', genres:'csv', bio:'string', featured:'boolchoice' },
-  news: { title:'string', date:'date', category:'string', summary:'string', body:'paragraphs', link:'url', thumbnail:'image:news', publishAt:'datetime' },
+  news: { title:'string', date:'date', category:'string', summary:'string', body:'paragraphs', members:'csv', link:'url', thumbnail:'image:news', publishAt:'datetime' },
   videos: { title:'string', member:'string', platform:'string', category:'string', date:'date', url:'url', thumbnail:'image:videos', description:'string', featured:'boolchoice', publishAt:'datetime' },
-  events: { title:'string', date:'date', time:'time', type:'string', description:'string', url:'url', thumbnail:'image:events', publishAt:'datetime' },
+  events: { title:'string', date:'date', time:'time', type:'string', description:'string', members:'csv', url:'url', thumbnail:'image:events', publishAt:'datetime' },
   collabs: { title:'string', date:'date', category:'string', description:'string', members:'csv', url:'url', thumbnail:'image:collabs', publishAt:'datetime' }
 });
 const MEMBER_EXTRA_FIELDS = Object.freeze({
@@ -131,6 +131,16 @@ function apply(resource, form, root=ROOT) {
   const id = str(form.id||'','id',64);
   if(!RECORD_IDS.test(id))fail('ID: lowercase letters, digits and hyphens only, max 64');
   const rows=readData(resource,root);
+  // Existing manually registered data may predate stable IDs. Require a safe
+  // audit/migration before mutating any record so a delete cannot target the
+  // wrong duplicate or an unidentified entry.
+  const existingIds=new Set();
+  for(const row of rows){
+    if(!row || typeof row!=='object' || Array.isArray(row) || !RECORD_IDS.test(row.id||'') || existingIds.has(row.id)){
+      fail(`${resource}: legacy entry has a missing/invalid/duplicate ID. Run the Existing Data audit and ID migration before editing.`);
+    }
+    existingIds.add(row.id);
+  }
   const idx=rows.findIndex(x=>x && x.id===id);
   if(operation==='delete') {
     if(idx<0) fail(`ID not found: ${id}`);

@@ -11,7 +11,7 @@ try:
 except ImportError:
     Image = None
 
-PAGES=['index.html','about.html','activities.html','members.html','news.html','join.html','faq.html','contact.html','guidelines.html','privacy.html','videos.html','events.html','collabs.html','schedule.html']
+PAGES=['index.html','about.html','activities.html','members.html','news.html','join.html','faq.html','contact.html','guidelines.html','privacy.html','videos.html','events.html','collabs.html','schedule.html','discover.html']
 ROOT=Path(__file__).resolve().parents[1]
 def build(destination,base_url):
     out=Path(destination).resolve();out.mkdir(parents=True,exist_ok=True)

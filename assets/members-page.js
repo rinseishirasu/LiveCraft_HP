@@ -46,6 +46,10 @@
   let searchTerm = '';
   const searchInput = document.getElementById('member-search');
   const platformApi = window.LiveCraftPlatforms;
+  const favorites = window.LC6Favorites;
+  let favoritesOnly = false;
+  const favoritesFilter = document.querySelector('[data-lc6-favorites-filter]');
+  const favoritesFilterCount = document.querySelector('[data-lc6-favorite-count]');
   const platformSelect = document.getElementById('member-platform');
   const platformWrap = document.querySelector('[data-platform-filter-wrap]');
   if (platformApi && platformSelect && platformWrap) {
@@ -376,6 +380,7 @@
       catch { copy.textContent='URLを選択してコピーしてください'; }
     });
     actions.append(copy);
+    if (favorites) { const favorite = favorites.createButton(member,'lc6-favorite-in-modal'); actions.append(favorite); favorites.updateButtons(); }
     body.append(actions);
     dialogContent.replaceChildren(layout);
     dialog.showModal();
@@ -418,6 +423,7 @@
     button.append(chip, inner, node('span', 'member-icon-action', '↗'));
     button.addEventListener('click', () => showProfile(member, button));
     item.append(button);
+    if (favorites) { const favorite = favorites.createButton(member,'lc6-favorite-in-card'); item.append(favorite); }
     const primaryPlatform = platformApi?.primary(member) || '';
     if (primaryPlatform) {
       const platformLabel = node('div', 'member-list-platform');
@@ -480,26 +486,30 @@
     });
     const byGenre = genre === 'all' ? candidates : candidates.filter(m => Array.isArray(m.genres) && m.genres.includes(genre));
     const byPlatform = selectedPlatform === 'all' ? byGenre : byGenre.filter(m => platformApi?.matches(m, selectedPlatform));
-    const buttons = [makeGenerationControl('all', 'すべて', byPlatform.length)];
+    const byFavorites = favoritesOnly && favorites ? byPlatform.filter(m => favorites.has(m)) : byPlatform;
+    const buttons = [makeGenerationControl('all', 'すべて', byFavorites.length)];
     generations.forEach(generation => {
       const value = generation == null ? 'unassigned' : String(generation);
-      buttons.push(makeGenerationControl(value, generationLabel(generation), byPlatform.filter(m => generationOf(m) === generation).length));
+      buttons.push(makeGenerationControl(value, generationLabel(generation), byFavorites.filter(m => generationOf(m) === generation).length));
     });
     generationFilters.replaceChildren(...buttons);
-    const selected = activeGeneration === 'all' ? byPlatform : byPlatform.filter(m => (generationOf(m) == null ? 'unassigned' : String(generationOf(m))) === activeGeneration);
+    const selected = activeGeneration === 'all' ? byFavorites : byFavorites.filter(m => (generationOf(m) == null ? 'unassigned' : String(generationOf(m))) === activeGeneration);
     const visibleGenerations = activeGeneration === 'all' ? generations : generations.filter(g => (g == null ? 'unassigned' : String(g)) === activeGeneration);
     const groups = visibleGenerations.map(generation => {
       const collection = selected.filter(m => generationOf(m) === generation);
       return collection.length ? makeGroup(generation, collection) : null;
     }).filter(Boolean);
     grid.replaceChildren(...groups);
+    favorites?.updateButtons();
+    if (favoritesFilterCount) favoritesFilterCount.textContent = String(favorites?.count(members)||0);
+    if (favoritesFilter) favoritesFilter.setAttribute('aria-pressed',String(favoritesOnly));
     document.dispatchEvent(new CustomEvent('lc:streams-updated'));
     grid.hidden = !groups.length;
     resultStatus.textContent = `${selected.length}名を表示中`;
     if (!groups.length) {
       empty.hidden = false;
-      empty.querySelector('h3').textContent = '該当するメンバーはいません。';
-      empty.querySelector('p').textContent = 'ほかの期生やジャンルを選択してください。';
+      empty.querySelector('h3').textContent = favoritesOnly ? 'お気に入りのメンバーはいません。' : '該当するメンバーはいません。';
+      empty.querySelector('p').textContent = favoritesOnly ? 'カードの☆でお気に入りを登録するか、絞り込みを解除してください。' : 'ほかの期生やジャンルを選択してください。';
     } else {
       empty.hidden = true;
     }
@@ -509,6 +519,8 @@
   resultStatus.hidden = false;
   filter.addEventListener('change', render);
   platformSelect?.addEventListener('change', render);
+  favoritesFilter?.addEventListener('click',()=>{favoritesOnly=!favoritesOnly;render();});
+  document.addEventListener('lc6:favorites-changed',render);
   searchInput?.addEventListener('input', event => {
     searchTerm = String(event.target.value || '').normalize('NFKC').toLocaleLowerCase('ja').trim();
     render();
