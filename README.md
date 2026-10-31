@@ -1,3 +1,9 @@
+# Live Craft Ver.5.1.1｜登録済みデータ管理の改善
+
+最新の機能は [`RELEASE_NOTES_v5.1.1.md`](RELEASE_NOTES_v5.1.1.md) を参照してください。Ver.5.1の7種の管理ワークフローに加えて、GitHub Actionsで既存レコードを検索しIDを補完できる機能を追加しました。
+
+---
+
 # Live Craft Ver.5.1｜GitHub内で完結する管理
 
 **最新の操作手順は [`MANAGEMENT_V5.1.md`](MANAGEMENT_V5.1.md) を参照してください。** 7種のGitHub Actionsフォームから管理し、自動的にサイトを再公開します。個人PATやローカル管理TOOLは不要です。既存の登録済みデータを守るため、更新時はVer.5.1パッチを使用してください。

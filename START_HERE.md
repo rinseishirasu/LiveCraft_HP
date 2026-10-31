@@ -1,3 +1,14 @@
+# Ver.5.1.1からの最初の操作
+
+1. GitHubリポジトリに更新パッチを反映します（`assets/*.js`を上書きしません）。
+2. `Actions → Live Craft | 既存データ確認・ID補完 → Run workflow` で `mode=inspect` を実行し、登録済みIDを確認します。
+3. 旧形式の「ID未設定」があった場合のみ `mode=migrate` で安全に補完します。
+4. 7種の既存管理フォームで `upsert` とそのIDを使い、変更する項目だけを更新できます。
+
+詳細は [`RELEASE_NOTES_v5.1.1.md`](RELEASE_NOTES_v5.1.1.md) を確認してください。
+
+---
+
 # Live Craft Ver.5.1 クイックスタート
 
 ## 最初の設定

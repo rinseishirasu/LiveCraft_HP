@@ -131,6 +131,16 @@ function apply(resource, form, root=ROOT) {
   const id = str(form.id||'','id',64);
   if(!RECORD_IDS.test(id))fail('ID: lowercase letters, digits and hyphens only, max 64');
   const rows=readData(resource,root);
+  // Existing manually registered data may predate stable IDs. Require a safe
+  // audit/migration before mutating any record so a delete cannot target the
+  // wrong duplicate or an unidentified entry.
+  const existingIds=new Set();
+  for(const row of rows){
+    if(!row || typeof row!=='object' || Array.isArray(row) || !RECORD_IDS.test(row.id||'') || existingIds.has(row.id)){
+      fail(`${resource}: legacy entry has a missing/invalid/duplicate ID. Run the Existing Data audit and ID migration before editing.`);
+    }
+    existingIds.add(row.id);
+  }
   const idx=rows.findIndex(x=>x && x.id===id);
   if(operation==='delete') {
     if(idx<0) fail(`ID not found: ${id}`);
