@@ -1,10 +1,21 @@
 (() => {
   'use strict';
   const c = window.LIVE_CRAFT_CONFIG || {};
-  const isHttpUrl = (url) => { try { const u = new URL(url); return ['https:', 'http:'].includes(u.protocol); } catch { return false; } };
-  const open = !!c.recruitmentOpen && isHttpUrl(c.applicationUrl);
+  const isHttpUrl = (url) => { try { const u = new URL(url); return u.protocol === 'https:'; } catch { return false; } };
+  const now = Date.now();
+  const parsed = value => value && Number.isFinite(Date.parse(value)) ? Date.parse(value) : null;
+  const startAt = parsed(c.recruitmentStartAt);
+  const endAt = parsed(c.recruitmentEndAt);
+  let open = !!c.recruitmentOpen && isHttpUrl(c.applicationUrl);
+  let recruitLabel = open ? 'メンバー募集中' : '募集準備中';
+  if (c.recruitmentMode === 'paused') { open = false; recruitLabel = '募集停止中'; }
+  if (c.recruitmentMode === 'scheduled') {
+    open = isHttpUrl(c.applicationUrl) && (startAt == null || now >= startAt) && (endAt == null || now < endAt);
+    recruitLabel = endAt != null && now >= endAt ? '募集終了' : (startAt != null && now < startAt ? '募集開始予定' : (open ? 'メンバー募集中' : '募集準備中'));
+  }
+  if (c.recruitmentMode === 'manual' && c.recruitmentOpen === false) recruitLabel = '募集準備中';
   document.querySelectorAll('[data-recruit-status]').forEach((el) => {
-    el.textContent = open ? 'メンバー募集中' : '募集準備中';
+    el.textContent = recruitLabel;
     el.classList.toggle('open', open);
   });
   document.querySelectorAll('[data-application-area]').forEach((el) => {
@@ -19,7 +30,7 @@
     } else {
       const note = document.createElement('p');
       note.className = 'small muted';
-      note.textContent = '現在は募集準備中です。応募受付の開始時にこちらからご案内します。';
+      note.textContent = recruitLabel + 'です。応募受付時はここからご案内します。';
       el.replaceChildren(note);
     }
   });
