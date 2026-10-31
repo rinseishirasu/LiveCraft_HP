@@ -11,6 +11,7 @@ window.LIVE_CRAFT_MEMBERS = [
       "雑談",
       "歌"
     ],
+    "bio": "眠くなる声で、君の毎日にひと休みを🌙白栖凜生です🐺🥝一生愛してほしいオタクライバー🔥REALITYで配信しています。",
     "catchphrase": "眠くなる声で、君の毎日にひと休みを🌙",
     "birthday": "07-30",
     "debutDate": "2026-01-02",
