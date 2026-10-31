@@ -10,7 +10,7 @@ const memberHref = m => window.LiveCraftMembers?.urlFor?.(m) || 'members.html';
 function card(s, compact=false,at=S.now()) {
  const status=S.stateAt(s,at), item=el('article','lc5-stream-card'+(compact?' compact':'')+' '+status);
  const top=el('div','lc5-stream-top');const art=el('span','lc5-stream-avatar');
- const src=window.LiveCraftMembers?.safeAvatar?.(s.member.avatar);if(src){const img=el('img');img.src=src;img.alt='';img.loading='lazy';art.append(img);}else art.append(span('lc5-avatar-fallback','LC'));
+ const src=window.LiveCraftMembers?.safeProfileIcon?.(s.member);if(src){const img=el('img');img.src=src;img.alt='';img.loading='lazy';art.append(img);}else art.append(span('lc5-avatar-fallback','LC'));
  const name=el('a','lc5-stream-member',s.member.name);name.href=memberHref(s.member);
  const meta=el('div','lc5-stream-meta');meta.append(name,span('lc5-platform',String(s.platform||'Streaming').slice(0,30)));
  top.append(art,meta,span('lc5-stream-status status-'+status,S.stateLabel(status)));item.append(top);

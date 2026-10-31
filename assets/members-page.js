@@ -126,7 +126,8 @@
       badge.append(node('span', 'member-initial-name', initials(member.name)));
       wrap.replaceChildren(badge);
     };
-    const src = avatarPath(member.avatar);
+    // Always use the icon image on the list and icon fallback, never the standing illustration.
+    const src = avatarPath(member.avatar) !== fullbodyPath(member.fullbody) ? avatarPath(member.avatar) : null;
     if (!src) {
       fallback();
     } else {

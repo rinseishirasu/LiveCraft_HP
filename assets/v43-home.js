@@ -16,7 +16,7 @@
     a.setAttribute('aria-label', `${m.name}の個別プロフィールへ`);
     a.style.setProperty('--preview-accent',window.LiveCraftMembers.themeColor(m));
     const visual = document.createElement('span'); visual.className = 'v41-home-talent-visual';
-    const avatar=window.LiveCraftMembers.safeAvatar(m.avatar);
+    const avatar=window.LiveCraftMembers.safeProfileIcon(m);
     if (avatar) {
       const img=document.createElement('img'); img.src=avatar; img.alt=''; img.loading='lazy';
       img.addEventListener('error',()=>{visual.textContent=[...m.name].slice(0,2).join('');},{once:true});

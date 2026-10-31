@@ -5,7 +5,7 @@ window.LIVE_CRAFT_MEMBERS = [
     "id": "rinsei-shirasu",
     "name": "白栖 凜生",
     "generation": 1,
-    "role": "メンバー",
+    "role": "代表",
     "agency": "321.inc",
     "genres": [
       "雑談",

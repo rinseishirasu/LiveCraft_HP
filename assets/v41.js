@@ -16,7 +16,7 @@
     a.setAttribute('aria-label', `${member.name}の紹介ページへ`);
     a.style.setProperty('--preview-accent', colors[((Number.isInteger(member.generation) && member.generation > 0 ? member.generation : i + 1)-1) % colors.length]);
     const art = document.createElement('span'); art.className = 'v41-home-talent-visual';
-    const src = safeAvatar(member.avatar);
+    const src = safeAvatar(member.avatar) !== safeAvatar(member.fullbody) ? safeAvatar(member.avatar) : null;
     if (src) {
       const img = document.createElement('img'); img.src = src; img.alt = ''; img.loading='lazy';
       img.onerror = () => { art.textContent = [...member.name].slice(0,2).join(''); };
