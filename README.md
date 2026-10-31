@@ -1,3 +1,23 @@
+# Live Craft Ver.5.1.5｜既存メンバー登録時のActionsテスト失敗を修正
+
+[修正内容と適用手順](RELEASE_NOTES_v5.1.5.md)を参照してください。公開データには変更を加えていません。
+
+---
+
+# Live Craft Ver.5.1.3｜GitHub ActionsのNode.js 24対応
+
+古いGitHub ActionsのNode.js 20非推奨警告に対応し、失敗時の案内を強化しました。既存コンテンツには変更を加えていません。
+
+詳しくは [`RELEASE_NOTES_v5.1.3.md`](RELEASE_NOTES_v5.1.3.md) と [`ACTIONS_ERROR_GUIDE.md`](ACTIONS_ERROR_GUIDE.md) を参照してください。
+
+---
+
+# Live Craft Ver.5.1.2｜メンバーポップアップの表示切れ修正
+
+Ver.5.1.1からの表示改善版です。MEMBERS一覧で開く長いプロフィールが見切れず、画面内で最後までスクロールできます。閉じるボタンは常に操作可能です。詳細とパッチ手順は [`RELEASE_NOTES_v5.1.2.md`](RELEASE_NOTES_v5.1.2.md) を参照してください。既存のメンバー・NEWS・配信予定・GitHub Actions管理は変更していません。
+
+---
+
 # Live Craft Ver.5.1.1｜登録済みデータ管理の改善
 
 最新の機能は [`RELEASE_NOTES_v5.1.1.md`](RELEASE_NOTES_v5.1.1.md) を参照してください。Ver.5.1の7種の管理ワークフローに加えて、GitHub Actionsで既存レコードを検索しIDを補完できる機能を追加しました。
