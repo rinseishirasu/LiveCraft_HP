@@ -32,11 +32,12 @@ jobs:
             tests/platforms.test.cjs
             tests/v6-features.test.cjs
             tests/v61.test.cjs
+            tests/v62.test.cjs
           )
           missing=0
           for item in "${required[@]}"; do
             if [[ ! -f "$item" ]]; then
-              echo "::error file=$item::Missing $item. Copy the full tests/ directory from the Ver.6.1 release package to the repository root. If a script is missing, obtain it from the Ver.6.1 release package."
+              echo "::error file=$item::Missing $item. Copy the full tests/ directory from the Ver.6.2 release package to the repository root. If a script is missing, obtain it from the Ver.6.2 release package."
               echo "MISSING: $item"
               missing=1
             fi
@@ -44,7 +45,7 @@ jobs:
           if [[ "$missing" -ne 0 ]]; then
             {
               echo '## Live Craft: 管理・テスト用ファイルが不足しています'
-              echo 'エラーで表示されたパスに、Ver.6.1 正式版のファイルをアップロードしてください。'
+              echo 'エラーで表示されたパスに、Ver.6.2 正式版のファイルをアップロードしてください。'
               echo '保存先はリポジトリ直下の `tests/` と `scripts/` です。'
               echo 'アップロード後、コミットしてから Actions を新規実行してください。'
             } >> "$GITHUB_STEP_SUMMARY"
@@ -61,7 +62,9 @@ jobs:
       - name: Validate member platform filters
         run: node tests/platforms.test.cjs
       - name: Validate Ver 6.1 features
-        run: node tests/v61.test.cjs
+        run: |
+          node tests/v61.test.cjs
+          node tests/v62.test.cjs
       - name: Validate Ver.6.0 features
         run: node tests/v6-features.test.cjs
       - run: python -m pip install --disable-pip-version-check "Pillow>=11,<13"

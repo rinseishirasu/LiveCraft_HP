@@ -22,8 +22,8 @@ const SOURCES = Object.freeze({
   recruitment: ['assets/config.js', 'LIVE_CRAFT_CONFIG']
 });
 const FIELDS = Object.freeze({
-  streams: { memberId:'string', title:'string', platform:'string', streamUrl:'url', startAt:'datetimeJst', endAt:'datetimeJst', status:'status', thumbnail:'image:streams' },
-  members: { name:'string', generation:'generation', role:'string', agency:'string', primaryPlatform:'string', primaryPlatformUrl:'url', avatar:'image:members', fullbody:'image:members', genres:'csv', bio:'string', featured:'boolchoice' },
+  streams: { memberId:'string', title:'string', platform:'string', streamUrl:'url', startAt:'datetimeJst', endAt:'datetimeJst', status:'status', thumbnail:'image:streams', repeat:'repeat', repeatUntil:'date' },
+  members: { name:'string', generation:'generation', role:'string', agency:'string', primaryPlatform:'string', primaryPlatformUrl:'url', avatar:'image:members', fullbody:'image:members', genres:'csv', bio:'string', featured:'boolchoice', fanClubUrl:'url', fanClubLabel:'string', fanGuidelinesUrl:'url' },
   news: { title:'string', date:'date', category:'string', summary:'string', body:'paragraphs', members:'csv', link:'url', thumbnail:'image:news', publishAt:'datetime' },
   videos: { title:'string', member:'string', platform:'string', category:'string', date:'date', url:'url', thumbnail:'image:videos', description:'string', featured:'boolchoice', publishAt:'datetime' },
   events: { title:'string', date:'date', time:'time', type:'string', description:'string', members:'csv', url:'url', thumbnail:'image:events', publishAt:'datetime' },
@@ -31,7 +31,7 @@ const FIELDS = Object.freeze({
   projects: {title:'string', summary:'string', description:'string', status:'projectStatus', category:'string', cover:'image:projects', members:'csv', relatedVideos:'csv', relatedCollabs:'csv', startDate:'date', externalUrl:'url', featured:'boolchoice', publishAt:'datetime'}
 });
 const MEMBER_EXTRA_FIELDS = Object.freeze({
-  outfits:'outfits', catchphrase:'string', birthday:'birthday', debutDate:'date', fanName:'string', fanMark:'string', streamTag:'string', fanArtTag:'string', hobbies:'csvOrArray', memberColor:'hex', colorName:'string', schedule:'string', scheduleUrl:'url', introVideoUrl:'url', illustrator:'string', illustratorUrl:'url', links:'links', featured:'boolean', genres:'arrayStrings', bio:'string', role:'string', agency:'string', primaryPlatform:'string', primaryPlatformUrl:'url', avatar:'image:members', fullbody:'image:members'
+  outfits:'outfits', fanClubUrl:'url', fanClubLabel:'string', fanGuidelinesUrl:'url', catchphrase:'string', birthday:'birthday', debutDate:'date', fanName:'string', fanMark:'string', streamTag:'string', fanArtTag:'string', hobbies:'csvOrArray', memberColor:'hex', colorName:'string', schedule:'string', scheduleUrl:'url', introVideoUrl:'url', illustrator:'string', illustratorUrl:'url', links:'links', featured:'boolean', genres:'arrayStrings', bio:'string', role:'string', agency:'string', primaryPlatform:'string', primaryPlatformUrl:'url', avatar:'image:members', fullbody:'image:members'
 });
 const RECORD_IDS = /^[a-z0-9][a-z0-9-]{0,63}$/;
 function fail(message) { throw new Error(message); }
@@ -100,6 +100,7 @@ function parseField(value, type, field) {
     });
   }
   if (type==='projectStatus') { const s=str(value,field,16);if(!['upcoming','ongoing','completed'].includes(s))fail('projectStatus: use upcoming/ongoing/completed');return s; }
+  if (type==='repeat') { const s=str(value,field,20); if(!['none','weekly','biweekly'].includes(s))fail('repeat: use none/weekly/biweekly'); return s; }
   if (type==='status') { const s=str(value,field,20); if(!['scheduled','cancelled','postponed','ended'].includes(s)) fail('invalid status'); return s; }
   if (type==='boolean') { if(typeof value!=='boolean') fail(`${field}: boolean required`); return value; }
   if (type==='boolchoice') { if(value==='keep') return undefined; if(value==='true'||value===true)return true; if(value==='false'||value===false)return false;fail(`${field}: expected true/false/keep`); }
@@ -128,6 +129,15 @@ function validateRecord(resource, row) {
       fail('endAt must be later than startAt');
     }
     if(!['scheduled','cancelled','postponed','ended'].includes(row.status||'scheduled'))fail('invalid status');
+    const recurring=['weekly','biweekly'].includes(row.repeat);
+    if(row.repeat && !['none','weekly','biweekly'].includes(row.repeat))fail('invalid repeat');
+    if(recurring){
+      if(!row.repeatUntil)fail('repeatUntil required for repeating streams');
+      const until=parseField(row.repeatUntil,'date','repeatUntil');
+      const startDay=row.startAt.slice(0,10);const delta=(Date.parse(until+'T00:00:00Z')-Date.parse(startDay+'T00:00:00Z'))/86400000;
+      if(delta<0||delta>366)fail('repeatUntil must be within 366 days from startAt');
+    }
+    if(row.repeatUntil && !recurring)fail('repeatUntil requires weekly or biweekly repeat');
   } else if (!str(row.title||'','title',500)) fail('title required');
   if(['news','events','collabs'].includes(resource) && row.published && !row.date) fail('date is required for published entries');
   if(resource==='videos' && row.published && !row.url) fail('a public video URL is required');
@@ -181,9 +191,11 @@ function apply(resource, form, root=ROOT) {
     const pub=form.published || 'keep';
     if(!['true','false','keep'].includes(pub))fail('published must be true/false/keep');
     if(pub!=='keep')rec.published=pub==='true';
+    if(resource==='streams' && rec.repeat==='none') delete rec.repeatUntil;
     validateRecord(resource,rec);
     if(resource==='streams') {
       if(!rec.status)rec.status='scheduled';
+      if(rec.repeat==='none')delete rec.repeatUntil;
     }
     if(resource==='streams' && rec.published) {
       const members=readData('members',root);

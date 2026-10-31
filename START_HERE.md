@@ -1,3 +1,7 @@
+# Live Craft Ver.6.2 正式版
+
+Ver.6.1.1 を基に FAN EXPERIENCE + LIVE EXPERIENCE を統合しました。新しい機能・手順は `RELEASE_NOTES_v6.2.md`、`FEATURES_V6.2.md`、`PATCH_README_V6.1.1_TO_V6.2.md` を参照してください。
+
 # Ver.6.0 最終統合版について
 
 既存データを保護するため、すでにサイトを公開している場合は**フルZIPではなく差分パッチ**を利用してください。詳細は `FEATURES_V6_FINAL.md` を参照してください。

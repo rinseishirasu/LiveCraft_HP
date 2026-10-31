@@ -16,9 +16,10 @@ function card(s, compact=false,at=S.now()) {
  top.append(art,meta,span('lc5-stream-status status-'+status,S.stateLabel(status)));item.append(top);
  item.append(el('h3','lc5-stream-title',s.title.slice(0,130)));
  const when=el('p','lc5-stream-time',`${S.dateTime(s.startMs,S.lang())} – ${S.timeOnly(s.endMs,S.lang())} JST`);item.append(when);
+ if(['weekly','biweekly'].includes(s.repeat))item.append(el('small','lc62-repeat-label',s.repeat==='weekly'?t('↻ 毎週','Weekly'):t('↻ 隔週','Biweekly')));
  if(s.status==='scheduled'&&s.endMs>at&&window.LC6Calendar){const add=el('button','lc6-calendar-button',t('カレンダーに追加 ↓','Add to calendar ↓'));add.type='button';add.setAttribute('aria-label',t(`${s.member.name}の${s.title}をカレンダーに追加`, `Add ${s.member.name}'s ${s.title} to calendar`));add.addEventListener('click',()=>window.LC6Calendar.save([s],`live-craft-${s.id}.ics`));item.append(add);}
  if(typeof s.description==='string'&&s.description.trim()&&!compact)item.append(el('p','lc5-stream-desc',s.description.slice(0,180)));
- const thumb=imagePath(s.thumbnail);if(thumb&&!compact){const img=el('img','lc5-stream-thumb');img.src=thumb;img.loading='lazy';img.alt='';item.insertBefore(img,item.querySelector('.lc5-stream-title'));}
+ const thumb=imagePath(s.thumbnail);if(thumb){const img=el('img',compact?'lc62-thumb-compact':'lc5-stream-thumb');img.src=thumb;img.loading='lazy';img.alt='';item.insertBefore(img,item.querySelector('.lc5-stream-title'));}
  if(s.streamUrl && status!=='cancelled' && status!=='postponed') { const a=el('a','lc5-stream-link',t('配信ページを開く ↗','Open stream ↗'));a.href=s.streamUrl;a.target='_blank';a.rel='noopener noreferrer';item.append(a); }
  if(['scheduled-live','finished'].includes(status))item.append(el('small','lc5-disclaimer',t('※実際の配信状況は未確認です','Schedule-based status, not verified')));
  return item;
@@ -31,7 +32,7 @@ function renderHome(){if(!home)return;const at=S.now(),lives=S.plannedLive(at).s
  attach(home,chosen.length?chosen.map(s=>card(s,true,at)):[empty(t('現在、公開中の配信予定はありません。','No published streams yet.'),t('メンバーの予定が登録されると、ここに表示されます。','Schedules will appear here once added.'))]);
  const more=document.querySelector('[data-lc5-more-upcoming]');if(more)more.textContent=t('配信予定一覧を見る →','See all streams →');
 }
-const list=document.querySelector('[data-lc5-week-list]');let monday=S.startOfWeek();let selectedMember='all';let selectedPlatform='all';let favoritesOnly=false;
+const list=document.querySelector('[data-lc5-week-list]');let monday=S.startOfWeek();let selectedMember='all';let selectedPlatform='all';let favoritesOnly=false;let viewMode='week';let monthKey=S.todayJST().slice(0,7);
 const platformFilter=document.querySelector('[data-lc6-schedule-platform]');
 const favoritesFilter=document.querySelector('[data-lc6-schedule-favorites]');
 const exportButton=document.querySelector('[data-lc6-week-export]');
@@ -42,10 +43,15 @@ const requestedWeek=scheduleParams.get('week');
 const validWeek=key=>/^\d{4}-\d{2}-\d{2}$/.test(key||'')&&Number.isFinite(S.keyToMS(key))&&S.dayKey(S.keyToMS(key))===key&&S.startOfWeek(S.keyToMS(key))===key;
 if(list&&validWeek(requestedWeek))monday=requestedWeek;
 if(list&&scheduleParams.get('fav')==='1')favoritesOnly=true;
+if(list&&scheduleParams.get('view')==='month')viewMode='month';
+if(list&&/^\d{4}-(0[1-9]|1[0-2])$/.test(scheduleParams.get('month')||''))monthKey=scheduleParams.get('month');
+const monthToggle=document.querySelector('[data-lc62-view-mode]');
+const monthGrid=document.querySelector('[data-lc62-month-grid]');
+const monthDetails=document.querySelector('[data-lc62-month-details]');
 const shareControl=document.querySelector('[data-lc6-share-schedule]');
 const shareFeedback=document.querySelector('[data-lc6-share-feedback]');
 const nextPanel=document.querySelector('[data-lc6-next-highlight]');
-function viewUrl(){const u=new URL(location.href);u.search='';if(monday!==S.startOfWeek())u.searchParams.set('week',monday);if(selectedMember!=='all')u.searchParams.set('member',selectedMember);if(selectedPlatform!=='all')u.searchParams.set('platform',selectedPlatform);if(favoritesOnly)u.searchParams.set('fav','1');return u;}
+function viewUrl(){const u=new URL(location.href);u.search='';if(monday!==S.startOfWeek()&&viewMode==='week')u.searchParams.set('week',monday);if(viewMode==='month'){u.searchParams.set('view','month');u.searchParams.set('month',monthKey);}if(selectedMember!=='all')u.searchParams.set('member',selectedMember);if(selectedPlatform!=='all')u.searchParams.set('platform',selectedPlatform);if(favoritesOnly)u.searchParams.set('fav','1');return u;}
 function syncViewUrl(){if(!list)return;const u=viewUrl();try{history.replaceState(null,'',u.pathname+u.search+u.hash);}catch{}}
 async function shareView(){const url=viewUrl().href;let ok=false;
  try{if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(url);ok=true;}}catch{}
@@ -59,8 +65,31 @@ function renderNext(){if(!nextPanel)return;const at=S.now();const upcoming=S.nex
   const star=el('span','lc6-next-symbol','✳');const info=el('span','lc6-next-info');info.append(el('strong','',item.title.slice(0,92)),el('span','',`${item.member.name} / ${item.platform||'Streaming'}`));const time=el('span','lc6-next-time');time.append(el('strong','',countdown(item.startMs,at)),el('small','',S.dateTime(item.startMs,S.lang())+' JST'));a.append(star,info,time);nextPanel.append(a);}
 }
 
-const weekItems=()=>{const weekEnd=S.addDays(monday,7);return S.plans.filter(s=>S.dayKey(s.startMs)>=monday&&S.dayKey(s.startMs)<weekEnd&&(selectedMember==='all'||s.memberId===selectedMember)&&(selectedPlatform==='all'||s.platform===selectedPlatform)&&(!favoritesOnly||favorites?.has(s.member)));};
-function renderWeek(){if(!list)return;const at=S.now(),shown=weekItems();
+const filteredItems=()=>S.plans.filter(s=>(selectedMember==='all'||s.memberId===selectedMember)&&(selectedPlatform==='all'||s.platform===selectedPlatform)&&(!favoritesOnly||favorites?.has(s.member)));
+const weekItems=()=>{const weekEnd=S.addDays(monday,7);return filteredItems().filter(s=>S.dayKey(s.startMs)>=monday&&S.dayKey(s.startMs)<weekEnd);};
+const periodItems=()=>viewMode==='month'?filteredItems().filter(s=>S.dayKey(s.startMs).slice(0,7)===monthKey):weekItems();
+function renderMonth(){if(!monthGrid)return;
+ const first=monthKey+'-01';const start=S.startOfWeek(S.keyToMS(first));const current=S.todayJST();
+ const weekNames=S.lang()==='en'?['Mon','Tue','Wed','Thu','Fri','Sat','Sun']:['月','火','水','木','金','土','日'];
+ const all=periodItems();monthGrid.replaceChildren();
+ for(const name of weekNames)monthGrid.append(el('span','lc62-month-weekday',name));
+ for(let i=0;i<42;i++){
+  const date=S.addDays(start,i),rows=all.filter(s=>S.dayKey(s.startMs)===date),inMonth=date.slice(0,7)===monthKey;
+  const cell=el('div','lc62-month-day'+(inMonth?'':' outside')+(date===current?' today':''));
+  const open=el('button','lc62-month-open',date.slice(-2).replace(/^0/,''));open.type='button';open.setAttribute('aria-label',date+' '+t(`${rows.length}件の予定`,` ${rows.length} streams`));open.disabled=!inMonth;
+  open.addEventListener('click',()=>{monthDetails.replaceChildren();monthDetails.hidden=false;monthDetails.append(el('h3','',date.replaceAll('-','/')+' / '+t(`${rows.length}件の公開予定`,`${rows.length} streams`)));if(rows.length)monthDetails.append(...rows.map(s=>card(s,true)));else monthDetails.append(el('p','lc62-muted',t('公開予定はありません。','No published streams.')));});
+  cell.append(open);
+  if(inMonth){for(const stream of rows.slice(0,2)){const chip=el('span','lc62-month-entry '+(stream.status||''),`${S.timeOnly(stream.startMs,S.lang())} ${stream.title}`);chip.title=stream.title;cell.append(chip);}if(rows.length>2)cell.append(el('span','lc62-month-more',`+${rows.length-2}`));}
+  monthGrid.append(cell);
+ }
+}
+function changePeriod(direction){if(viewMode==='month'){const [y,m]=monthKey.split('-').map(Number);const d=new Date(Date.UTC(y,m-1+direction,1));monthKey=d.toISOString().slice(0,7);}else monday=S.addDays(monday,direction*7);syncViewUrl();renderWeek();}
+function renderWeek(){if(!list)return;const at=S.now(),shown=periodItems();
+ const monthly=viewMode==='month';list.hidden=monthly;if(monthGrid)monthGrid.hidden=!monthly;
+ if(monthDetails){monthDetails.hidden=true;monthDetails.replaceChildren();}
+ monthToggle?.querySelectorAll('[data-lc62-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lc62View===viewMode)));
+ if(monthly){document.querySelector('[data-lc5-week-title]')?.replaceChildren(el('span','',`${monthKey.replace('-',' / ')} ${t('月間','Monthly')}`));renderMonth();}
+ if(!monthly){
  const current=S.todayJST(at), parts=[el('span','',`${S.fmt(S.keyToMS?S.keyToMS(monday):Date.parse(monday+'T00:00:00+09:00'),S.lang(),{month:'short',day:'numeric'})} – ${S.fmt(Date.parse(S.addDays(monday,6)+'T00:00:00+09:00'),S.lang(),{month:'short',day:'numeric',year:'numeric'})}`)];
  document.querySelector('[data-lc5-week-title]')?.replaceChildren(...parts);
  const weekdays=S.lang()==='en'?['Mon','Tue','Wed','Thu','Fri','Sat','Sun']:['月','火','水','木','金','土','日'];
@@ -70,7 +99,7 @@ function renderWeek(){if(!list)return;const at=S.now(),shown=weekItems();
    if(dateStreams.length)col.append(...dateStreams.map(s=>card(s,true,at)));else col.append(el('p','lc5-day-empty',t('公開予定なし','No streams')));
    nodes.push(col);
  }
- attach(list,nodes);
+ attach(list,nodes);}
  const summary=document.querySelector('[data-lc5-summary]');if(summary)summary.textContent=t(`${shown.length}件の公開予定`,`${shown.length} scheduled stream(s)`);
  if(exportButton)exportButton.disabled=!shown.some(s=>s.status==='scheduled'&&s.endMs>at);
  if(favoritesFilter)favoritesFilter.setAttribute('aria-pressed',String(favoritesOnly));
@@ -78,11 +107,13 @@ function renderWeek(){if(!list)return;const at=S.now(),shown=weekItems();
 if(list){
  if(platformFilter){for(const p of [...new Set(S.plans.map(s=>s.platform).filter(x=>typeof x==='string'&&x.trim()))].sort()){const option=el('option','',p);option.value=p;platformFilter.append(option);}if([...platformFilter.options].some(x=>x.value===scheduleParams.get('platform'))) {selectedPlatform=scheduleParams.get('platform');platformFilter.value=selectedPlatform;}platformFilter.addEventListener('change',()=>{selectedPlatform=platformFilter.value;syncViewUrl();renderWeek();});}
  favoritesFilter?.addEventListener('click',()=>{favoritesOnly=!favoritesOnly;syncViewUrl();renderWeek();});
- exportButton?.addEventListener('click',()=>{const future=weekItems().filter(s=>s.status==='scheduled'&&s.endMs>S.now());window.LC6Calendar?.save(future,`live-craft-${monday}.ics`);});
+ exportButton?.addEventListener('click',()=>{const future=periodItems().filter(s=>s.status==='scheduled'&&s.endMs>S.now());window.LC6Calendar?.save(future,`live-craft-${viewMode==='month'?monthKey:monday}.ics`);});
  const select=document.querySelector('[data-lc5-member-select]');if(select){for(const m of S.publicMembers()){if(!m.id)continue;const option=el('option','',m.name);option.value=m.id;select.append(option);}if([...select.options].some(x=>x.value===scheduleParams.get('member'))) {selectedMember=scheduleParams.get('member');select.value=selectedMember;}select.addEventListener('change',()=>{selectedMember=select.value;syncViewUrl();renderWeek();});}
- document.querySelector('[data-lc5-week-prev]')?.addEventListener('click',()=>{monday=S.addDays(monday,-7);syncViewUrl();renderWeek();});
- document.querySelector('[data-lc5-week-next]')?.addEventListener('click',()=>{monday=S.addDays(monday,7);syncViewUrl();renderWeek();});
- document.querySelector('[data-lc5-week-today]')?.addEventListener('click',()=>{monday=S.startOfWeek();syncViewUrl();renderWeek();});shareControl?.addEventListener('click',shareView);}
+ document.querySelector('[data-lc5-week-prev]')?.addEventListener('click',()=>changePeriod(-1));
+ document.querySelector('[data-lc5-week-next]')?.addEventListener('click',()=>changePeriod(1));
+ document.querySelector('[data-lc5-week-today]')?.addEventListener('click',()=>{monday=S.startOfWeek();monthKey=S.todayJST().slice(0,7);syncViewUrl();renderWeek();});
+ monthToggle?.querySelectorAll('[data-lc62-view]').forEach(button=>button.addEventListener('click',()=>{viewMode=button.dataset.lc62View==='month'?'month':'week';syncViewUrl();renderWeek();}));
+ shareControl?.addEventListener('click',shareView);}
 const profile=document.querySelector('[data-lc5-member-streams]');
 function renderProfile(){if(!profile)return;const id=new URLSearchParams(location.search).get('id');const member=S.publicMembers().find(m=>window.LiveCraftMembers?.key(m)===id);const plans=member?S.memberStreams(member.id).slice(0,4):[];
  if(!member){profile.closest('section').hidden=true;return;}profile.closest('section').hidden=false;
