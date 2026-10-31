@@ -77,3 +77,9 @@ Object.assign(window.LC_TRANSLATIONS,{
  'プロフィールを閉じる':'Close profile',
  '例：面談、兼任、配信ノルマ':'e.g. interview, membership, quotas'
 });
+
+/* Ver.5.0.2 optional member-agency field labels. */
+Object.assign(window.LC_TRANSLATIONS,{
+  '所属事務所':'Agency',
+  '個人勢':'Independent'
+});

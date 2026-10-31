@@ -28,3 +28,32 @@ body.version-five.page-404 .page-hero{min-height:60vh}
   body.version-five .page-hero{padding-top:64px;padding-bottom:58px}
   body.version-five .lc5-language{margin-left:0}
 }
+
+/* Ver.5.0.2: optional agency information for public member cards and profiles. */
+body.version-five .member-list-agency {
+  display:flex;align-items:center;justify-content:center;gap:5px 9px;flex-wrap:wrap;
+  margin:9px 4px 0;padding:7px 9px;border-radius:14px;
+  border:1px solid #e6e0f6;background:rgba(255,255,255,.85);
+  box-shadow:0 6px 16px rgba(75,63,140,.05);text-align:center;
+  min-width:0;color:#4f4678;line-height:1.45;
+}
+body.version-five .member-list-agency-label {
+  color:#72669c;font-weight:800;letter-spacing:.03em;font-size:.64rem;
+}
+body.version-five .member-list-agency-name {
+  color:#343058;font-weight:850;font-size:.74rem;
+  min-width:0;overflow-wrap:anywhere;
+}
+body.version-five .profile-agency {
+  display:inline-flex;align-items:center;flex-wrap:wrap;gap:6px 10px;
+  min-width:0;padding:10px 14px;border:1px solid #dfd8f6;border-radius:16px;
+  background:#faf8ff;color:#35315f;line-height:1.55;
+}
+body.version-five .profile-agency-label {color:#7265a8;font-size:.69rem;font-weight:900;letter-spacing:.06em;}
+body.version-five .profile-agency-name {font-weight:850;font-size:.88rem;overflow-wrap:anywhere;}
+@media(max-width:700px){
+  body.version-five .member-list-agency{flex-direction:column;gap:2px;padding:7px 4px;border-radius:11px;}
+  body.version-five .member-list-agency-label{font-size:.55rem}
+  body.version-five .member-list-agency-name{font-size:.67rem}
+  body.version-five .profile-agency{width:auto;padding:8px 12px;}
+}

@@ -202,6 +202,14 @@
     if (typeof member.role === 'string' && member.role.trim()) {
       meta.append(node('span', 'profile-role', member.role.trim()));
     }
+    // Outside agency affiliation is independent of the role within Live Craft.
+    const agency = typeof member.agency === 'string' ? member.agency.trim().slice(0, 80) : '';
+    if (agency) {
+      const affiliation = node('span', 'profile-agency');
+      affiliation.append(node('span', 'profile-agency-label', '所属事務所'));
+      affiliation.append(node('strong', 'profile-agency-name', agency));
+      meta.append(affiliation);
+    }
     header.append(meta);
     body.append(header);
 
@@ -376,6 +384,14 @@
     button.append(chip, inner, node('span', 'member-icon-action', '↗'));
     button.addEventListener('click', () => showProfile(member, button));
     item.append(button);
+    // Keep the icon-first layout; show the agency only when explicitly supplied.
+    const agency = typeof member.agency === 'string' ? member.agency.trim().slice(0, 80) : '';
+    if (agency) {
+      const affiliation = node('div', 'member-list-agency');
+      affiliation.append(node('span', 'member-list-agency-label', '所属事務所'));
+      affiliation.append(node('span', 'member-list-agency-name', agency));
+      item.append(affiliation);
+    }
     return item;
   };
 
@@ -415,7 +431,7 @@
     const genre = filter.value;
     const normalized = s => String(s ?? '').normalize('NFKC').toLocaleLowerCase('ja');
     const candidates = members.filter(m => {
-      const searchable = [m.name,m.catchphrase,m.bio,m.role,m.fanName,
+      const searchable = [m.name,m.catchphrase,m.bio,m.role,m.agency,m.fanName,
         ...(Array.isArray(m.genres)?m.genres:[]),
         ...(Array.isArray(m.links)?m.links.map(l=>l?.label):[])].join(' ');
       return !searchTerm || normalized(searchable).includes(searchTerm);
