@@ -1,0 +1,72 @@
+name: "Live Craft | NEWS管理"
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: "操作"
+        required: true
+        type: choice
+        options:
+          - "upsert"
+          - "hide"
+          - "delete"
+        default: "upsert"
+      id:
+        description: "固定ID（英小文字・数字・ハイフン）"
+        required: false
+        type: string
+      title:
+        description: "記事タイトル"
+        required: false
+        type: string
+      date:
+        description: "記事日付 YYYY-MM-DD"
+        required: false
+        type: string
+      category:
+        description: "カテゴリー"
+        required: false
+        type: string
+      summary:
+        description: "概要文"
+        required: false
+        type: string
+      body:
+        description: "本文（改行ごとに段落分割）"
+        required: false
+        type: string
+      link:
+        description: "外部リンク"
+        required: false
+        type: string
+      thumbnail:
+        description: "画像パス: assets/news/..."
+        required: false
+        type: string
+      publishAt:
+        description: "画面表示の開始日時（公開ソースは非公開にならない）"
+        required: false
+        type: string
+      published:
+        description: "公開状態（keep は既存値を維持 / 新規時は非公開）"
+        required: true
+        type: choice
+        options:
+          - "keep"
+          - "true"
+          - "false"
+        default: "keep"
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+jobs:
+  update_and_publish:
+    uses: ./.github/workflows/_manage-and-publish.yml
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    with:
+      resource: news
+      form: ${{ toJSON(inputs) }}

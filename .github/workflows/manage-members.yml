@@ -1,0 +1,93 @@
+name: "Live Craft | メンバー管理"
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: "操作"
+        required: true
+        type: choice
+        options:
+          - "upsert"
+          - "hide"
+          - "delete"
+        default: "upsert"
+      id:
+        description: "固定ID（英小文字・数字・ハイフン）"
+        required: false
+        type: string
+      name:
+        description: "活動名"
+        required: false
+        type: string
+      generation:
+        description: "期生番号"
+        required: false
+        type: string
+      role:
+        description: "Live Craftでの役割"
+        required: false
+        type: string
+      agency:
+        description: "所属事務所 / 個人勢"
+        required: false
+        type: string
+      primaryPlatform:
+        description: "主要活動プラットフォーム"
+        required: false
+        type: string
+      primaryPlatformUrl:
+        description: "媒体URL（https://）"
+        required: false
+        type: string
+      avatar:
+        description: "一覧アイコン: assets/members/xxx.webp"
+        required: false
+        type: string
+      fullbody:
+        description: "詳細立ち絵: assets/members/xxx.webp"
+        required: false
+        type: string
+      genres:
+        description: "ジャンル（カンマ区切り）"
+        required: false
+        type: string
+      bio:
+        description: "自己紹介文"
+        required: false
+        type: string
+      featured:
+        description: "トップでピックアップ"
+        required: true
+        type: choice
+        options:
+          - "keep"
+          - "true"
+          - "false"
+        default: "keep"
+      extras_json:
+        description: "追加プロフィール項目JSON（任意）"
+        required: false
+        type: string
+      published:
+        description: "公開状態（keep は既存値を維持 / 新規時は非公開）"
+        required: true
+        type: choice
+        options:
+          - "keep"
+          - "true"
+          - "false"
+        default: "keep"
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+jobs:
+  update_and_publish:
+    uses: ./.github/workflows/_manage-and-publish.yml
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    with:
+      resource: members
+      form: ${{ toJSON(inputs) }}

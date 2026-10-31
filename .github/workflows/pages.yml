@@ -1,0 +1,43 @@
+name: Live Craft GitHub Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: livecraft-publish-${{ github.repository }}
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate schedule status rules
+        run: node tests/streams.test.cjs
+      - name: Validate member platform filters
+        run: node tests/platforms.test.cjs
+      - run: python -m pip install --disable-pip-version-check "Pillow>=11,<13"
+      - id: pages
+        uses: actions/configure-pages@v5
+      - name: Build SEO and optimized site
+        env:
+          PAGES_BASE_URL: ${{ steps.pages.outputs.base_url }}
+        run: python scripts/build_site.py --output _site
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

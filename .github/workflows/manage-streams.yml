@@ -1,0 +1,79 @@
+name: "Live Craft | 配信スケジュール管理"
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: "操作"
+        required: true
+        type: choice
+        options:
+          - "upsert"
+          - "hide"
+          - "delete"
+        default: "upsert"
+      id:
+        description: "固定ID（英小文字・数字・ハイフン）"
+        required: false
+        type: string
+      memberId:
+        description: "メンバーID"
+        required: false
+        type: string
+      title:
+        description: "配信タイトル"
+        required: false
+        type: string
+      platform:
+        description: "媒体（YouTube / Twitchなど）"
+        required: false
+        type: string
+      streamUrl:
+        description: "配信URL（https://）"
+        required: false
+        type: string
+      startAt:
+        description: "開始日時（2026-11-01T20:00:00+09:00）"
+        required: false
+        type: string
+      endAt:
+        description: "終了日時（2026-11-01T22:00:00+09:00）"
+        required: false
+        type: string
+      status:
+        description: "予定状態"
+        required: true
+        type: choice
+        options:
+          - "keep"
+          - "scheduled"
+          - "cancelled"
+          - "postponed"
+          - "ended"
+        default: "keep"
+      thumbnail:
+        description: "サムネイル相対パス（任意）"
+        required: false
+        type: string
+      published:
+        description: "公開状態（keep は既存値を維持 / 新規時は非公開）"
+        required: true
+        type: choice
+        options:
+          - "keep"
+          - "true"
+          - "false"
+        default: "keep"
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+jobs:
+  update_and_publish:
+    uses: ./.github/workflows/_manage-and-publish.yml
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    with:
+      resource: streams
+      form: ${{ toJSON(inputs) }}

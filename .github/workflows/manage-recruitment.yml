@@ -1,0 +1,61 @@
+name: "Live Craft | 募集・公式設定管理"
+on:
+  workflow_dispatch:
+    inputs:
+      recruitmentMode:
+        description: "募集モード"
+        required: true
+        type: choice
+        options:
+          - "keep"
+          - "manual"
+          - "paused"
+          - "scheduled"
+        default: "keep"
+      recruitmentOpen:
+        description: "手動募集受付状態"
+        required: true
+        type: choice
+        options:
+          - "keep"
+          - "true"
+          - "false"
+        default: "keep"
+      applicationUrl:
+        description: "応募フォームURL（https:// / __CLEAR__ で消去）"
+        required: false
+        type: string
+      contactUrl:
+        description: "問い合わせURL（https:// / __CLEAR__ で消去）"
+        required: false
+        type: string
+      recruitmentStartAt:
+        description: "募集開始時刻 ISO8601+09:00"
+        required: false
+        type: string
+      recruitmentEndAt:
+        description: "募集終了時刻 ISO8601+09:00"
+        required: false
+        type: string
+      rulesEffectiveDate:
+        description: "規約施行日"
+        required: false
+        type: string
+      rulesVersion:
+        description: "規約版数"
+        required: false
+        type: string
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+jobs:
+  update_and_publish:
+    uses: ./.github/workflows/_manage-and-publish.yml
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    with:
+      resource: recruitment
+      form: ${{ toJSON(inputs) }}
