@@ -29,10 +29,11 @@
       a.href = c.contactUrl;
       a.target = '_blank';
       a.rel = 'noopener noreferrer';
-      a.textContent = '運営へのお問い合わせ ↗';
+      a.textContent = 'お問い合わせフォームを開く ↗';
+      if (el.classList.contains('contact-area')) a.className = 'button button-primary';
       el.replaceChildren(a);
     } else {
-      el.textContent = 'お問い合わせ窓口は準備中です。';
+      el.textContent = el.classList.contains('contact-area') ? '現在、お問い合わせ窓口を準備しています。公開後、こちらからフォームをご案内します。' : 'お問い合わせ窓口は準備中です。';
     }
   });
   document.querySelectorAll('[data-rules-date]').forEach((el) => {

@@ -7,14 +7,23 @@
   const filter = document.querySelector('[data-member-filter]');
   const dialog = document.getElementById('member-profile-dialog');
   const dialogContent = document.getElementById('profile-dialog-content');
+  const generationToolbar = document.getElementById('generation-toolbar');
+  const generationFilters = document.getElementById('generation-filters');
+  const resultStatus = document.getElementById('member-results-status');
   const closeButton = document.querySelector('[data-profile-close]');
-  if (!grid || !empty || !count || !filterWrap || !filter || !dialog || !dialogContent || !closeButton) return;
+  if (!grid || !empty || !count || !filterWrap || !filter || !dialog || !dialogContent || !closeButton || !generationToolbar || !generationFilters || !resultStatus) return;
 
   const raw = Array.isArray(window.LIVE_CRAFT_MEMBERS) ? window.LIVE_CRAFT_MEMBERS : [];
   const members = raw.filter(m => m && m.published === true && typeof m.name === 'string' && m.name.trim());
   count.textContent = String(members.length).padStart(2, '0');
   if (!members.length) return;
   empty.hidden = true;
+
+  // 期生を持たない既存の公開データも表示し、誤った期生を推測しません。
+  const generationOf = member => Number.isSafeInteger(member.generation) && member.generation > 0 && member.generation <= 999 ? member.generation : null;
+  const generationLabel = generation => generation == null ? '期生未設定' : `${generation}期生`;
+  const generations = [...new Set(members.map(generationOf))].sort((a, b) => a == null ? 1 : b == null ? -1 : a - b);
+  let activeGeneration = 'all';
 
   const genres = [...new Set(members.flatMap(m => Array.isArray(m.genres) ? m.genres.filter(g => typeof g === 'string' && g.trim()) : []))];
   if (genres.length > 1) {
@@ -71,9 +80,15 @@
     const title = node('h2', 'profile-title', member.name);
     title.id = 'profile-dialog-name';
     header.append(title);
+    const meta = node('div', 'profile-meta');
+    const generationTag = node('span', 'profile-generation');
+    generationTag.append(node('span', 'profile-generation-label', '所属期生'));
+    generationTag.append(node('strong', '', generationLabel(generationOf(member))));
+    meta.append(generationTag);
     if (typeof member.role === 'string' && member.role.trim()) {
-      header.append(node('span', 'profile-role', member.role.trim()));
+      meta.append(node('span', 'profile-role', member.role.trim()));
     }
+    header.append(meta);
     body.append(header);
 
     if (Array.isArray(member.genres)) {
@@ -134,7 +149,7 @@
     const item = node('li', 'member-icon-item');
     const button = node('button', 'member-icon-button');
     button.type = 'button';
-    button.setAttribute('aria-label', `${member.name}のプロフィールを見る`);
+    button.setAttribute('aria-label', `${member.name}（${generationLabel(generationOf(member))}）のプロフィールを見る`);
     button.setAttribute('aria-haspopup', 'dialog');
     button.title = `${member.name}のプロフィールを見る`;
     button.append(createAvatar(member, 'member-icon-art'));
@@ -143,16 +158,67 @@
     item.append(button);
     return item;
   };
-  const render = genre => {
-    const visible = genre === 'all' ? members : members.filter(m => Array.isArray(m.genres) && m.genres.includes(genre));
-    grid.replaceChildren(...visible.map(makeIcon));
-    grid.hidden = !visible.length;
-    if (!visible.length) {
+  const selectGeneration = value => {
+    activeGeneration = value;
+    render();
+  };
+
+  const makeGenerationControl = (value, label, total) => {
+    const button = node('button', 'generation-filter');
+    button.type = 'button';
+    button.dataset.generation = value;
+    button.setAttribute('aria-pressed', String(activeGeneration === value));
+    button.append(node('span', 'generation-filter-text', label));
+    button.append(node('span', 'generation-filter-count', String(total).padStart(2, '0')));
+    button.addEventListener('click', () => selectGeneration(value));
+    return button;
+  };
+
+  const makeGroup = (generation, collection) => {
+    const section = node('section', 'generation-group');
+    const header = node('div', 'generation-group-header');
+    const heading = node('div', 'generation-group-heading');
+    heading.append(node('span', 'generation-group-eyebrow', generation == null ? 'GENERATION / UNASSIGNED' : `GENERATION / ${String(generation).padStart(2, '0')}`));
+    heading.append(node('h3', 'generation-group-title', generationLabel(generation)));
+    header.append(heading);
+    header.append(node('span', 'generation-group-count', `${collection.length} MEMBERS`));
+    section.append(header);
+    const list = node('ul', 'member-grid');
+    list.setAttribute('aria-label', `${generationLabel(generation)}のメンバーアイコン`);
+    list.append(...collection.map(makeIcon));
+    section.append(list);
+    return section;
+  };
+
+  const render = () => {
+    const genre = filter.value;
+    const byGenre = genre === 'all' ? members : members.filter(m => Array.isArray(m.genres) && m.genres.includes(genre));
+    const buttons = [makeGenerationControl('all', 'すべて', byGenre.length)];
+    generations.forEach(generation => {
+      const value = generation == null ? 'unassigned' : String(generation);
+      buttons.push(makeGenerationControl(value, generationLabel(generation), byGenre.filter(m => generationOf(m) === generation).length));
+    });
+    generationFilters.replaceChildren(...buttons);
+    const selected = activeGeneration === 'all' ? byGenre : byGenre.filter(m => (generationOf(m) == null ? 'unassigned' : String(generationOf(m))) === activeGeneration);
+    const visibleGenerations = activeGeneration === 'all' ? generations : generations.filter(g => (g == null ? 'unassigned' : String(g)) === activeGeneration);
+    const groups = visibleGenerations.map(generation => {
+      const collection = selected.filter(m => generationOf(m) === generation);
+      return collection.length ? makeGroup(generation, collection) : null;
+    }).filter(Boolean);
+    grid.replaceChildren(...groups);
+    grid.hidden = !groups.length;
+    resultStatus.textContent = `${selected.length}名を表示中`;
+    if (!groups.length) {
       empty.hidden = false;
       empty.querySelector('h3').textContent = '該当するメンバーはいません。';
-      empty.querySelector('p').textContent = '別のジャンルを選択してください。';
-    } else empty.hidden = true;
+      empty.querySelector('p').textContent = 'ほかの期生やジャンルを選択してください。';
+    } else {
+      empty.hidden = true;
+    }
   };
-  filter.addEventListener('change', () => render(filter.value));
-  render('all');
+
+  generationToolbar.hidden = false;
+  resultStatus.hidden = false;
+  filter.addEventListener('change', render);
+  render();
 })();
