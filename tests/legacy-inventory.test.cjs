@@ -5,12 +5,10 @@ const os=require('node:os');
 const path=require('node:path');
 const {inspect,inspectAll,migrate}=require('../scripts/legacy_inventory.cjs');
 const {apply,readData}=require('../scripts/manage_content.cjs');
+const {seedEmptyPublicData}=require('./_fixtures.cjs');
 const root=fs.mkdtempSync(path.join(os.tmpdir(),'livecraft-legacy-'));
 try{
-  fs.mkdirSync(path.join(root,'assets'),{recursive:true});
-  for(const key of ['members','news','streams','events','videos','collabs','config']){
-    fs.copyFileSync(path.join(__dirname,'..','assets',key+'.js'),path.join(root,'assets',key+'.js'));
-  }
+  seedEmptyPublicData(root);
   fs.writeFileSync(path.join(root,'assets/members.js'),`window.LIVE_CRAFT_MEMBERS = [
    {name:'旧メンバー🌷', generation:2, agency:'個人勢',published:true,links:[{label:'YouTube',url:'https://example.com'}],customOldField:'keep'},
    {name:'未公開メンバー', bio:'昔の自己紹介', published:false},

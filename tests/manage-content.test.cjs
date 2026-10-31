@@ -4,11 +4,9 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const {apply,readData} = require('../scripts/manage_content.cjs');
+const {seedEmptyPublicData} = require('./_fixtures.cjs');
 const root=fs.mkdtempSync(path.join(os.tmpdir(),'livecraft-actions-'));
-for (const name of ['members','news','events','videos','collabs','streams','config']) {
-  fs.mkdirSync(path.join(root,'assets'),{recursive:true});
-  fs.copyFileSync(path.join(__dirname,'../assets',name+'.js'),path.join(root,'assets',name+'.js'));
-}
+seedEmptyPublicData(root);
 function run(resource,form){ return apply(resource,form,root); }
 function one(resource){ return readData(resource,root)[0]; }
 function throws(resource,form,pattern){ assert.throws(()=>run(resource,form),pattern); }
@@ -52,5 +50,28 @@ try {
   run('recruitment',{recruitmentMode:'paused',applicationUrl:'__CLEAR__'});
   assert.equal(readData('recruitment',root).applicationUrl,'');
   assert.equal(readData('recruitment',root).rulesVersion,'1.1');
-  console.log('PASS: 7 managed resources, validations, publish/hide/delete, merges, unicode, settings');
+  // Regression: the real GitHub repository may already contain public members.
+  // Updating or adding records must not depend on the first array element.
+  const existingRoot = fs.mkdtempSync(path.join(os.tmpdir(),'livecraft-existing-test-'));
+  try {
+    seedEmptyPublicData(existingRoot);
+    fs.writeFileSync(path.join(existingRoot,'assets/members.js'),
+      `window.LIVE_CRAFT_MEMBERS = [
+        {id:'existing-member',name:'既存メンバー',published:true,
+         bio:'元の紹介文',links:[{label:'公式',url:'https://example.com'}],customOldField:'保持'}
+      ];\n`, 'utf8');
+    apply('members',{id:'new-member',name:'てすと🌷',published:'true'},existingRoot);
+    let members = readData('members',existingRoot);
+    assert.equal(members.length,2);
+    assert.equal(members.find(x=>x.id==='existing-member').bio,'元の紹介文');
+    assert.equal(members.find(x=>x.id==='new-member').name,'てすと🌷');
+    apply('members',{id:'existing-member',agency:'個人勢',published:'keep'},existingRoot);
+    members = readData('members',existingRoot);
+    const oldMember = members.find(x=>x.id==='existing-member');
+    assert.equal(oldMember.agency,'個人勢');
+    assert.equal(oldMember.bio,'元の紹介文');
+    assert.equal(oldMember.customOldField,'保持');
+    assert.deepEqual(oldMember.links,[{label:'公式',url:'https://example.com'}]);
+  } finally {fs.rmSync(existingRoot,{recursive:true,force:true});}
+  console.log('PASS: 7 managed resources, isolated fixtures, populated-repository regression, safe merges, validations');
 } finally { fs.rmSync(root,{recursive:true,force:true}); }
