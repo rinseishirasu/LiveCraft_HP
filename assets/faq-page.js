@@ -21,8 +21,9 @@
       group.hidden = !inGroup;
     });
     if(empty)empty.hidden = count !== 0;
-    if(result)result.textContent = keyword ? `${count}件の質問が見つかりました` : '';
+    if(result)result.textContent = keyword ? (window.LC_I18N?.lang?.()==='en' ? `${count} result(s) found` : `${count}件の質問が見つかりました`) : '';
   };
   input.addEventListener('input', search);
   if(reset)reset.addEventListener('click', () => {input.value='';search();input.focus();});
+  document.addEventListener('lc:language-change',search);
 })();

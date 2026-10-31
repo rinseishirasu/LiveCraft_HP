@@ -1,0 +1,30 @@
+/* Live Craft Ver.5.0.1: shared interior page polish, consistent with the v5 HOME. */
+body.version-five .page-hero{
+  position:relative;isolation:isolate;overflow:hidden;
+  background:radial-gradient(ellipse at 83% 12%,rgba(232,222,255,.86),transparent 46%),
+    radial-gradient(ellipse at 8% 88%,rgba(229,246,255,.8),transparent 41%),
+    linear-gradient(115deg,#fffeff 4%,#f9f7ff 70%,#f3f4ff);
+  border-bottom:1px solid #eae5f6;
+}
+body.version-five .page-hero .container{position:relative;z-index:1}
+body.version-five .page-heading h1{line-height:1.25;max-width:950px}
+body.version-five .page-heading>p:not(.eyebrow){max-width:740px}
+body.version-five .page-hero::after{content:'✦';position:absolute;top:14%;right:9%;font-size:clamp(44px,6vw,92px);color:#b7a6f1;opacity:.48;transform:rotate(12deg);pointer-events:none}
+body.version-five .site-footer{border-top:1px solid #e8e5f1}
+body.version-five .site-footer .footer-links a:hover{color:#6652e9}
+body.version-five .nav-links a[aria-current="page"]{color:#6753e9}
+body.version-five .nav-links a[aria-current="page"]::after{background:#6955e8;opacity:1}
+body.version-five .lc5-language{flex-shrink:0}
+body.version-five [data-lc5-japanese-note]:not([hidden]){font-size:.91rem;line-height:1.7;box-sizing:border-box;width:min(calc(100% - 32px),1050px);max-width:1050px!important;margin:22px auto!important}
+body.version-five .page-heading .accent{line-height:inherit}
+body.version-five .page-hero .v4-page-decoration{opacity:.36}
+body.version-five .page-hero .v4-page-orbit{opacity:.5}
+body.version-five .lc5-notice{border-radius:8px 15px 15px 8px}
+body.version-five.page-404 .page-hero{min-height:60vh}
+@media(max-width:700px){
+  body.version-five .page-hero::after{right:5%;top:7%;opacity:.22}
+  body.version-five .page-hero .v4-page-decoration{opacity:.16}
+  body.version-five .page-heading h1{overflow-wrap:anywhere}
+  body.version-five .page-hero{padding-top:64px;padding-bottom:58px}
+  body.version-five .lc5-language{margin-left:0}
+}
