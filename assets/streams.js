@@ -1,16 +1,4 @@
-/* Live Craft Ver.5.0 / published stream schedule. No secret data. */
-window.LIVE_CRAFT_STREAMS = [
-  {
-    "id": "stream-001",
-    "memberId": "rinsei-shirasu",
-    "title": "【朝枠代替・深夜のこしょ雑】はっぴーはろうぃん（ちえん）",
-    "platform": "その他",
-    "status": "scheduled",
-    "startAt": "2026-10-31T23:30:00+09:00",
-    "endAt": "2026-11-01T00:30:00+09:00",
-    "streamUrl": "https://reality.app/profile/d19a7bd0?adj_t=8ogcewh_z9yhix5",
-    "thumbnail": "",
-    "description": "",
-    "published": true
-  }
-];
+/* Live Craft Ver.5.1 | Public streams data. Managed from GitHub Actions.
+ * Repository files and Git history are public. Do not store private or unapproved information.
+ */
+window.LIVE_CRAFT_STREAMS = [];
