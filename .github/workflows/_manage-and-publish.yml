@@ -42,6 +42,7 @@ jobs:
         run: node scripts/manage_content.cjs
       - name: Test before saving
         run: |
+          node tests/legacy-inventory.test.cjs
           node tests/manage-content.test.cjs
           node tests/streams.test.cjs
           node tests/schedule-page.test.cjs
