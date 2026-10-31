@@ -1,3 +1,34 @@
+# Live Craft 公式サイト Ver.4.5
+
+**Ver.4.4の動画・イベント・NEWS・コラボ機能をすべて含む完成版。**
+
+追加機能：
+- `tools/recruitment-settings.html`：募集状態・応募フォーム・募集期間を設定して `config.js` を書き出す。
+- `tools/content-manager.html`：公開メンバー・お知らせ・動画・イベント・コラボのローカル編集・JS書き出し（GitHubへは手動反映）。
+- `.github/workflows/pages.yml`：push/手動/定期再デプロイ対応のGitHub Pagesワークフロー。GitHub Pagesの「Source」を**GitHub Actions**に切り替える必要があります。
+- `scripts/build_site.py`：正規URL・OGP絶対URL・サイトマップ・robots・構造化データの生成。
+- 公開用画像：必要に応じてWebPに変換し、公開成果物のパスを自動更新（元の素材は保持）。
+- 応募・プロフィールの公開管理に関する運営マニュアル `OPERATIONS.md`。
+- `publishAt` による画面上の公開開始日時の制御（**非公開の予約投稿機能ではありません**）。
+
+最初に `OPERATIONS.md` を読んで設定してください。応募者の個人情報や非公開情報はGitHubリポジトリへ置かないでください。SNSのメンバー別個別OGPは未実装です。
+
+---
+
+# Live Craft 公式サイト Ver.4.4
+
+Ver.4.3の全機能を維持。新ページ：VIDEOS (`videos.html`)、EVENTS (`events.html`)、COLLABS (`collabs.html`)、NEWS記事 (`news-article.html?id=...`)。
+
+追加データ：`assets/videos.js`、`assets/events.js`、`assets/collabs.js`。いずれも `published: true` の公開許諾済み情報のみを登録。未登録時は準備中表示。
+
+NEWSは `assets/news.js` の項目に `id`（固有ID）、`thumbnail`（任意）、`publishAt`（任意）を追加できます。検索と記事詳細へ対応します。画像は `assets/news/` に配置。
+
+`publishAt` はブラウザー表示開始の目安であり**非公開機能ではありません**。未発表情報・個人情報はGitHubの公開リポジトリへ入れないでください。
+
+新規ページをトップ / ACTIVITIES / フッターから導線追加。既存の応募、メンバー、FAQは継続します。
+
+---
+
 # Live Craft 公式サイト Ver.4.3
 
 **Ver.4.2を引き継いだGitHub Pages対応版。ビルド不要・公開データは未登録です。**

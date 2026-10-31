@@ -1,64 +1,17 @@
-/* Plain-text safe NEWS renderer shared by HOME and NEWS. */
-(() => {
-  'use strict';
-  const list = (Array.isArray(window.LIVE_CRAFT_NEWS) ? window.LIVE_CRAFT_NEWS : [])
-    .filter(x => x && x.published === true && /^\d{4}-\d{2}-\d{2}$/.test(x.date || '') && typeof x.title === 'string' && x.title.trim())
-    .sort((a,b) => b.date.localeCompare(a.date));
-  const text = (tag, cls, value) => {
-    const el = document.createElement(tag);
-    if (cls) el.className = cls;
-    el.textContent = String(value || '');
-    return el;
-  };
-  const isLink = url => { try { const u = new URL(url); return u.protocol === 'https:' || u.protocol === 'http:'; } catch { return false; } };
-  const displayDate = date => date.replaceAll('-', '.');
-  const feed = document.getElementById('news-feed');
-  if (feed && list.length) {
-    const filterBar = document.getElementById('news-filters');
-    const cats = ['すべて', ...new Set(list.map(x => String(x.category || 'お知らせ')))];
-    let active = 'すべて';
-    const render = () => {
-      feed.replaceChildren();
-      list.filter(x => active === 'すべて' || String(x.category || 'お知らせ') === active).forEach((item, index) => {
-        const d = document.createElement('details');d.className = 'news-entry';
-        const summary = document.createElement('summary');
-        const meta = text('span','news-entry-meta','');
-        const time = text('time','news-date',displayDate(item.date));time.dateTime = item.date;
-        const category = text('span','news-category',item.category || 'お知らせ');
-        meta.append(time,category);
-        const title = text('span','news-entry-title',item.title);
-        const arrow = text('span','news-entry-arrow','↗');arrow.setAttribute('aria-hidden','true');
-        summary.append(meta,title,arrow);d.append(summary);
-        const body = document.createElement('div');body.className = 'news-entry-body';
-        const para = Array.isArray(item.body) ? item.body : [];
-        (para.length ? para : (item.summary ? [item.summary] : [])).forEach(p => { if(typeof p === 'string' && p.trim()) body.append(text('p','',p)); });
-        if (isLink(item.link)) { const a = text('a','text-link','関連リンクを開く ↗');a.href = item.link;a.target='_blank';a.rel='noopener noreferrer';body.append(a); }
-        d.append(body);feed.append(d);
-      });
-    };
-    if (filterBar && cats.length > 2) {
-      filterBar.hidden = false;
-      cats.forEach(cat => {
-        const button = text('button','news-filter',cat);
-        button.type='button';button.setAttribute('aria-pressed',String(cat===active));
-        button.addEventListener('click', () => {
-          active=cat;
-          filterBar.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
-          render();
-        });
-        filterBar.append(button);
-      });
-    }
-    render();
-  }
-  const home = document.getElementById('home-news-feed');
-  if(home && list.length){
-    home.replaceChildren();
-    list.slice(0,3).forEach(item => {
-      const a = document.createElement('a');a.href = 'news.html';a.className='home-news-item';
-      a.append(text('span','home-news-date',displayDate(item.date)), text('span','home-news-cat',item.category||'お知らせ'), text('span','home-news-title',item.title));
-      const icon = text('span','home-news-arrow','↗');icon.setAttribute('aria-hidden','true');a.append(icon);
-      home.append(a);
-    });
-  }
+/* Live Craft NEWS and HOME renderer. Plain text only, no untrusted HTML injection. */
+(() => {'use strict';
+const C=window.LCContent; if(!C)return;
+const {create,https,date,empty,image,records}=C;
+const list=records('LIVE_CRAFT_NEWS').filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x.date||'')&&typeof x.title==='string'&&x.title.trim()).sort((a,b)=>b.date.localeCompare(a.date));
+const feed=document.getElementById('news-feed');
+if(feed){const bar=document.getElementById('news-filters'),search=document.getElementById('news-search');const cats=['すべて',...new Set(list.map(x=>x.category||'お知らせ'))];let active='すべて';
+ if(bar&&cats.length>1){bar.hidden=false;cats.forEach(cat=>{const b=create('button','news-filter',cat);b.type='button';b.setAttribute('aria-pressed',String(cat===active));b.addEventListener('click',()=>{active=cat;bar.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));render();});bar.append(b);});}
+ const render=()=>{const q=(search?.value||'').trim().toLocaleLowerCase('ja');const filtered=list.filter(x=>(active==='すべて'||(x.category||'お知らせ')===active)&&[x.title,x.summary,...(Array.isArray(x.body)?x.body:[])].join(' ').toLocaleLowerCase('ja').includes(q));feed.replaceChildren();for(const item of filtered){const d=document.createElement('details');d.className='news-entry lc44-news-entry';
+ const sum=document.createElement('summary');const meta=create('span','news-entry-meta');const time=create('time','news-date',date(item.date));time.dateTime=item.date;meta.append(time,create('span','news-category',item.category||'お知らせ'));
+ const info=create('span','lc44-news-title-wrap');if(C.thumb(item.thumbnail)){const icon=create('span','lc44-news-thumb');icon.append(image(item.thumbnail));info.append(icon);}info.append(create('span','news-entry-title',item.title));
+ sum.append(meta,info,create('span','news-entry-arrow','↗'));d.append(sum);const body=create('div','news-entry-body');for(const p of (Array.isArray(item.body)&&item.body.length?item.body:[item.summary||'']))if(typeof p==='string'&&p.trim())body.append(create('p','',p));
+ if(https(item.link)){const a=create('a','text-link','関連リンクを開く ↗');a.href=https(item.link);a.target='_blank';a.rel='noopener noreferrer';body.append(a);}
+ if(typeof item.id==='string'&&/^[a-z0-9-]{1,64}$/.test(item.id)){const a=create('a','text-link','この記事を共有・詳しく見る ↗');a.href='news-article.html?id='+encodeURIComponent(item.id);body.append(a);}
+ d.append(body);feed.append(d);}if(!filtered.length)empty(feed,list.length?'該当するお知らせはありません':'最初のお知らせを準備しています。','お知らせが公開され次第、こちらでご案内します。');};search?.addEventListener('input',render);render();}
+const home=document.getElementById('home-news-feed');if(home&&list.length){home.replaceChildren();list.slice(0,3).forEach(item=>{const a=create('a','home-news-item');a.href=/^[a-z0-9-]{1,64}$/.test(item.id||'')?'news-article.html?id='+encodeURIComponent(item.id):'news.html';a.append(create('span','home-news-date',date(item.date)),create('span','home-news-cat',item.category||'お知らせ'),create('span','home-news-title',item.title),create('span','home-news-arrow','↗'));home.append(a);});}
 })();

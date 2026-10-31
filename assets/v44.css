@@ -1,0 +1,57 @@
+/* Live Craft Ver.4.4 | editorial cards, calendar, journal. */
+body.version-four .lc44-content-section{min-height:440px}
+body.version-four .lc44-section-heading{display:flex;align-items:end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:30px}
+body.version-four .lc44-section-heading h2{font-size:clamp(1.8rem,4vw,2.8rem);line-height:1.25;margin:8px 0;color:#30305c;font-weight:950}
+body.version-four .lc44-section-heading p{margin:5px 0;color:#73708b}
+body.version-four .lc44-controls{display:flex;gap:10px;flex-wrap:wrap}
+body.version-four .lc44-controls input,body.version-four .lc44-controls select,body.version-four .lc44-news-search input{border:1px solid #d8d4f0;border-radius:16px;padding:13px 16px;background:#fff;color:#383252;font:inherit;min-width:190px;max-width:100%}
+body.version-four .lc44-card-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+body.version-four .lc44-content-card{display:flex;flex-direction:column;min-width:0;overflow:hidden;text-decoration:none;border:1px solid #e9e3f4;border-radius:26px;background:#fff;box-shadow:0 16px 38px rgba(68,54,137,.08);transition:transform .28s ease,box-shadow .28s ease;color:#363355}
+body.version-four .lc44-content-card:hover{transform:translateY(-7px);box-shadow:0 26px 48px rgba(68,54,137,.15)}
+body.version-four .lc44-card-art{aspect-ratio:16/9;display:grid;place-items:center;overflow:hidden;background:radial-gradient(ellipse at 20% 20%,#ffeaf5,transparent 55%),linear-gradient(115deg,#f2efff,#e4f7fd)}
+body.version-four .lc44-cover{width:100%;height:100%;object-fit:cover}
+body.version-four .lc44-placeholder{font-size:3.5rem;color:#8a74df}
+body.version-four .lc44-card-body{padding:23px;display:flex;flex:1;flex-direction:column;align-items:start;gap:9px}
+body.version-four .lc44-card-kicker{color:#725bd0;font-weight:900;font-size:.74rem;letter-spacing:.09em}
+body.version-four .lc44-card-body h3{font-size:1.15rem;margin:0;color:#343057;line-height:1.55;font-weight:900}
+body.version-four .lc44-card-body p{font-size:.85rem;color:#79758a;margin:0}
+body.version-four .lc44-card-caption{color:#5f55a9;font-size:.75rem;font-weight:750}
+body.version-four .lc44-card-open{margin-top:auto;padding-top:12px;color:#6953dc;font-size:.8rem;font-weight:900}
+body.version-four .lc44-empty{grid-column:1/-1;border:2px dashed #ded6f7;background:linear-gradient(135deg,#fff,#f7f4ff);border-radius:26px;min-height:240px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px 18px}
+body.version-four .lc44-empty h3{font-size:1.25rem;margin:8px 0}.lc44-empty p{color:#79758a}.lc44-empty-symbol{font-size:2.4rem;color:#8874e5}
+body.version-four .lc44-calendar-layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);gap:26px;align-items:start}
+body.version-four .lc44-calendar-panel,body.version-four .lc44-event-panel{background:white;border:1px solid #e4def2;box-shadow:0 12px 35px #51479d0a;border-radius:25px;padding:24px}
+body.version-four .lc44-event-panel h3{margin:0 0 20px;font-size:1.35rem;color:#333059}
+body.version-four .lc44-monthbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+body.version-four .lc44-monthbar h3{font-weight:950;font-size:1.2rem}
+body.version-four .lc44-monthbar button{width:42px;height:42px;border:1px solid #dfd8f3;border-radius:14px;background:#f6f2ff;color:#6652d5;font-size:1.6rem;cursor:pointer}
+body.version-four .lc44-calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+body.version-four .lc44-weekday{text-align:center;color:#857ab5;font-weight:800;font-size:.75rem;padding:10px 0}
+body.version-four .lc44-day{min-height:82px;padding:8px;border-radius:10px;border:1px solid #eeeaf5;overflow:hidden}
+body.version-four .lc44-day.has-event{background:#f0eaff;border-color:#d3c6fc}
+body.version-four .lc44-day-num{font-size:.76rem;font-weight:900;color:#4a4574}
+body.version-four .lc44-event-dot{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.58rem;background:#7661de;color:white;border-radius:5px;margin-top:5px;padding:4px 5px}
+body.version-four .lc44-event-row{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:19px 3px;border-bottom:1px solid #ece7f4}
+body.version-four .lc44-event-row h3{font-size:1rem;margin:5px 0;color:#35305c}.lc44-event-row p{margin:0;font-size:.8rem;color:#807d96}
+body.version-four .lc44-event-link{color:#6652dc;font-weight:900;white-space:nowrap}
+body.version-four .lc44-discovery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+body.version-four .lc44-discovery-grid a{position:relative;padding:30px;min-height:175px;border-radius:24px;background:linear-gradient(135deg,#fff0f8,#eef4ff);border:1px solid #e7dbf2;box-shadow:0 14px 35px #51479d12;color:#323052;text-decoration:none}
+body.version-four .lc44-discovery-grid a:nth-child(2){background:linear-gradient(135deg,#eafaf5,#f3efff)}body.version-four .lc44-discovery-grid a:nth-child(3){background:linear-gradient(135deg,#f9f3ff,#fff5df)}
+body.version-four .lc44-discovery-grid a span{font-size:.7rem;letter-spacing:.12em;font-weight:900;color:#7868bb}
+body.version-four .lc44-discovery-grid a h3{font-size:1.8rem;margin:10px 0 4px;color:#34315b}
+body.version-four .lc44-discovery-grid a p{font-size:.84rem;margin:0;color:#69657f}
+body.version-four .lc44-discovery-grid a b{position:absolute;right:24px;top:24px;color:#6954df}
+body.version-four .lc44-home-content{background:transparent}
+body.version-four .lc44-more-links{margin-top:20px;text-align:right;font-weight:900;color:#6752d4}
+body.version-four .lc44-news-search{margin:20px 0;display:flex;align-items:center;gap:12px;flex-wrap:wrap}.lc44-news-search label{font-weight:800;font-size:.8rem;color:#6c6199}
+body.version-four .lc44-news-thumb{display:inline-flex;width:68px;aspect-ratio:16/10;border-radius:12px;overflow:hidden;background:#f3eaff;margin-right:14px;flex-shrink:0}.lc44-news-thumb img{width:100%;height:100%;object-fit:cover}
+body.version-four .lc44-news-title-wrap{display:flex;align-items:center;min-width:0}
+body.version-four .lc44-article{max-width:850px;margin:auto;border:1px solid #e6ddf4;border-radius:30px;background:#fff;padding:clamp(22px,5vw,56px);box-shadow:0 20px 50px rgba(65,55,130,.08)}
+body.version-four .lc44-article-title{font-size:clamp(1.6rem,4vw,2.65rem);line-height:1.4;margin:12px 0 25px;color:#33305d}
+body.version-four .lc44-article-image{aspect-ratio:16/9;max-height:440px;overflow:hidden;border-radius:23px;margin-bottom:24px}
+body.version-four .lc44-article-image img{width:100%;height:100%;object-fit:cover}
+body.version-four .lc44-article-paragraph{white-space:pre-line;color:#69657c;margin:0 0 22px;line-height:2.1}
+body.version-four .lc44-share-row{display:flex;gap:12px;margin-top:26px;flex-wrap:wrap}.lc44-share-link,.lc44-copy{border:1px solid #dfd7f8;background:#f3efff;color:#5d4abe;border-radius:99px;padding:12px 20px;cursor:pointer;font:inherit;font-weight:850}
+@media(max-width:900px){body.version-four .lc44-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}body.version-four .lc44-calendar-layout{grid-template-columns:1fr}body.version-four .lc44-discovery-grid{grid-template-columns:1fr}}
+@media(max-width:620px){body.version-four .lc44-card-grid{grid-template-columns:1fr}body.version-four .lc44-day{min-height:53px;padding:4px}body.version-four .lc44-event-dot{font-size:0;width:7px;height:7px;border-radius:50%;padding:0;margin-top:5px}body.version-four .lc44-calendar-panel{padding:12px}body.version-four .lc44-monthbar h3{font-size:1.05rem}body.version-four .lc44-section-heading{align-items:start}}
+@media(prefers-reduced-motion:reduce){body.version-four .lc44-content-card{transition:none}}
