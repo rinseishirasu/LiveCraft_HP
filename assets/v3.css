@@ -288,3 +288,59 @@ html.motion-ready [data-reveal]:not(.is-visible){opacity:0;transform:translateY(
  .profile-meta{margin-top:12px}
 }
 @media(prefers-reduced-motion:reduce){.generation-group{animation:none}.generation-filter{transition:none}}
+
+/* Ver.3.1.1 — Soft Atelier consistency for JOIN US & ABOUT */
+.section-soft {
+  background:radial-gradient(ellipse 660px 440px at 6% 20%,rgba(239,230,250,.85),transparent 77%),
+             radial-gradient(ellipse 740px 430px at 94% 90%,rgba(222,238,252,.74),transparent 80%),
+             linear-gradient(135deg,#fcfaff 0%,#f8f6fd 55%,#fafbff 100%);
+  border-block:1px solid #e9e3ef;
+}
+.section-soft .section-heading{max-width:800px}
+.section-soft .section-heading h2{color:#414661}
+.section-soft .section-heading p{color:#747b93}
+/* An airy application timeline rather than the old dark block */
+.page-join .formbox{
+  background:radial-gradient(ellipse 500px 300px at 100% 0,rgba(233,224,249,.46),transparent 80%),#fff;
+  border-color:#e5deee;
+  box-shadow:0 22px 66px rgba(114,106,155,.08);
+}
+.page-join .formbox .links-small a{color:#626b9c;text-underline-offset:5px}
+.page-join .formbox .links-small a:hover{color:#8875af}
+.process-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;max-width:1040px}
+.process-list .step{
+  min-width:0;margin:0;padding:27px 26px;
+  grid-template-columns:52px minmax(0,1fr);gap:16px;
+  align-items:start;
+  background:rgba(255,255,255,.82);
+  border:1px solid #e7e1ee;border-radius:25px;
+  box-shadow:0 10px 32px rgba(109,101,151,.047);
+  transition:transform .35s ease,border-color .35s ease,box-shadow .35s ease;
+}
+.process-list .step:hover{transform:translateY(-3px);border-color:#cec3e2;box-shadow:0 15px 38px rgba(117,102,156,.095)}
+.process-list .step:last-child{
+  grid-column:1 / -1;
+  background:linear-gradient(115deg,rgba(236,233,250,.92),rgba(233,243,254,.82));
+}
+.process-list .step-n{
+  width:48px;height:48px;border-radius:17px;
+  background:linear-gradient(145deg,#f2edfc,#e7eefb);
+  border:1px solid #ded7ee;color:#7775aa;
+  font-variant-numeric:tabular-nums;
+}
+.process-list .step h3{color:#424861;font-size:1.06rem;margin:2px 0 8px}
+.process-list .step p{color:#707a93;line-height:1.9}
+/* JOIN US FAQs look like the other soft disclosure elements */
+.page-join .faq details{background:rgba(255,255,255,.77);border:1px solid #e8e2ee;border-radius:18px;padding:19px 23px;margin-bottom:12px}
+.page-join .faq summary{color:#49516f;align-items:center}
+.page-join .faq summary:after{color:#9785c1}
+.page-join .faq details[open]{background:#fff;box-shadow:0 11px 32px rgba(108,101,150,.06)}
+.page-join .faq p{color:#727c94}
+@media(max-width:760px){.process-list{grid-template-columns:1fr}.process-list .step:last-child{grid-column:auto}}
+@media(max-width:700px){
+  .process-list{gap:12px}
+  .process-list .step{padding:21px 18px;grid-template-columns:43px minmax(0,1fr);gap:13px;border-radius:21px}
+  .process-list .step-n{width:41px;height:41px;border-radius:14px}
+  .page-join .faq details{padding:17px 18px;border-radius:16px}
+}
+@media(prefers-reduced-motion:reduce){.process-list .step{transition:none}.process-list .step:hover{transform:none}}
