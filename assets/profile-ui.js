@@ -166,6 +166,14 @@
     if (typeof member.role === 'string' && member.role.trim()) {
       meta.append(node('span', 'profile-role', member.role.trim()));
     }
+    // Outside agency affiliation is independent of the role within Live Craft.
+    const agency = typeof member.agency === 'string' ? member.agency.trim().slice(0, 80) : '';
+    if (agency) {
+      const affiliation = node('span', 'profile-agency');
+      affiliation.append(node('span', 'profile-agency-label', '所属事務所'));
+      affiliation.append(node('strong', 'profile-agency-name', agency));
+      meta.append(affiliation);
+    }
     header.append(meta);
     body.append(header);
 
