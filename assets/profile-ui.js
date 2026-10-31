@@ -175,6 +175,21 @@
       affiliation.append(node('strong', 'profile-agency-name', agency));
       meta.append(affiliation);
     }
+    const platformApi = window.LiveCraftPlatforms;
+    const platformName = platformApi?.primary(member) || '';
+    if (platformName) {
+      const badge = node('span', 'profile-primary-platform');
+      badge.append(node('span', 'profile-primary-platform-label', '主要活動プラットフォーム'));
+      badge.append(node('strong', 'profile-primary-platform-name', platformName));
+      const url = platformApi.mainUrl(member);
+      if (url) {
+        const link = node('a', 'profile-primary-platform-link', '配信先へ ↗');
+        link.href = url; link.target = '_blank'; link.rel = 'noopener noreferrer';
+        link.setAttribute('aria-label', `${platformName}の配信先を開く（新しいタブ）`);
+        badge.append(link);
+      }
+      meta.append(badge);
+    }
     header.append(meta);
     body.append(header);
 

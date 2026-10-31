@@ -11,12 +11,21 @@ window.LIVE_CRAFT_MEMBERS = [
       "雑談",
       "歌"
     ],
+    "bio","眠くなる声で、君の毎日にひと休みを🌙
+    	　 321所属の白栖凜生と申します！
+    	　 白栖のこと、一生愛してね💕"
     "catchphrase": "眠くなる声で、君の毎日にひと休みを🌙",
     "birthday": "07-30",
     "debutDate": "2026-01-02",
     "fanName": "ちりめんず",
     "fanMark": "🐺🥝",
     "avatar": "assets/members/rinsei-shirasu-icon.png",
-    "fullbody": "assets/members/rinsei-shirasu-full-body.png"
+    "fullbody": "assets/members/rinsei-shirasu-full-body.png",
+    "primaryPlatform": "REALITY",
+    "primaryPlatformUrl": "https://reality.app/profile/d19a7bd0?adj_t=8ogcewh_z9yhix5",
+    "links": [
+      { label: "YouTube", url: "https://www.youtube.com/@ShirasuRinsei" },
+      { label: "X", url: "https://x.com/ShirasuRinsei" }
+    ]
   }
 ];
