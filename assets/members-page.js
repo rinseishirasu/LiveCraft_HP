@@ -379,8 +379,12 @@
     body.append(actions);
     dialogContent.replaceChildren(layout);
     dialog.showModal();
+    // A previous profile may have been scrolled to the bottom. Reset the
+    // dedicated content scroller each time a new member opens.
+    dialogContent.scrollTop = 0;
+    dialog.scrollTop = 0;
     document.body.classList.add('modal-open');
-    closeButton.focus();
+    closeButton.focus({preventScroll: true});
   };
 
   closeButton.addEventListener('click', () => dialog.close());
