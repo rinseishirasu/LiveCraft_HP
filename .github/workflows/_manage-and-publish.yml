@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   update_build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
       pages: write
@@ -87,7 +87,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
   deploy:
     needs: update_build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
