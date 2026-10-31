@@ -1,3 +1,72 @@
+# Live Craft 公式サイト Ver.5.0
+
+**Ver.4.5の全機能を引き継ぎ、APIを使わない配信予定連動機能を追加しました。** 公式サイトはGitHub Pagesで公開できます。現在の配信状況は**予定時刻を使った表示**であり、実際の配信開始・終了は確認しません。
+
+## Ver.5.0 の機能
+
+- 新ページ `schedule.html`：日本時間(JST)の週次スケジュール、前週/翌週/今週の切り替え、メンバーによる絞り込み。
+- HOME：登録した配信開始・終了の予定時刻内は `LIVE予定` を優先表示。該当がなければ直近の予定を表示。
+- MEMBERS：予定時刻内の配信を持つメンバーのアイコンに `LIVE予定` バッジ。
+- メンバー専用ページ：その人の予定情報を表示。立ち絵・既存プロフィールは引き継ぎ。
+- 開始30分前は「まもなく」、開始から終了予定までは「LIVE予定」、予定終了で表示が変化。手動の `cancelled` / `postponed` / `ended` はLIVE扱いしません。
+- ページを開いている間は約30秒ごと、タブ復帰時にも表示を更新。
+- `tools/stream-manager.html`：公開配信予定の登録・更新・中止・手動終了と、`streams.js`の書き出し。**GitHubへの直接書込みはしません**。
+- 日本語/英語切り替え：**共通ナビゲーション、見出し、HOMEの中心コピー、配信スケジュール画面と配信カード**に対応。規約・プライバシー・一部既存説明文は日本語原文を維持しており、正式な英訳は今後の作業です。規約の日本語版が正式です。
+- YouTube/Twitch API・認証情報・外部サーバーは不要です。
+
+### 1. メンバーの登録
+
+先に `assets/members.js` に公開同意のあるメンバーを登録し、`id` を固定します。配信予定の `memberId` はこのIDを参照します。公開プロフィールに掲載許可のない配信予定を登録しないでください。
+
+### 2. 配信予定の登録
+
+`tools/stream-manager.html` をブラウザーで開き、予定を登録して **streams.js を書き出す** ボタンを押してください。出力された `streams.js` で `assets/streams.js` を置き換えてGitHubに反映します。画像は `assets/streams/` に置きます。時刻は必ず `+09:00` 付きISO文字列にしてください。翌日までの配信は終了日時に翌日を入力できます（最長24時間）。
+
+```js
+window.LIVE_CRAFT_STREAMS = [
+  {
+    published: true,
+    id: "example-stream-001",
+    memberId: "example-member-001", // assets/members.js の固定ID
+    title: "公開済みの配信タイトル",
+    description: "紹介文（任意）",
+    platform: "YouTube",
+    streamUrl: "https://www.youtube.com/watch?v=...",
+    startAt: "2026-11-01T20:00:00+09:00",
+    endAt: "2026-11-01T22:00:00+09:00",
+    status: "scheduled", // scheduled | cancelled | postponed | ended
+    thumbnail: "assets/streams/stream-001.webp"
+  }
+];
+```
+
+これは記入例です。配布ファイルの `LIVE_CRAFT_STREAMS` は **空** であり、実在しない予定は公開していません。
+
+### 3. 公開状態の判定
+
+- `scheduled`：開始30分前まで「配信予定」、開始30分前から「まもなく」、開始〜終了予定時刻は「LIVE予定」、終了後は「終了予定」。
+- `cancelled`：中止の予定として表示（LIVEにはしない）。
+- `postponed`：延期の予定として表示（LIVEにはしない）。日時を決め直したら `startAt/endAt` を修正して `scheduled` に戻します。
+- `ended`：早期終了時など運営が手動で終了扱いにするための状態。
+
+この切り替えはブラウザーの時計を使用します。時計が誤っている場合、利用者の表示がずれる可能性があります。配信が予定より延びた場合は登録済み終了日時を変更してください。GitHub PagesはHTML・CSS・JSを公開するのみで、実際の配信状況の真偽を判定しません。
+
+### 4. GitHub Pagesへのデプロイ
+
+Ver.4.5からのGitHub Actionsの公開ワークフローを維持しています。`.github/workflows/pages.yml` はmainへのpush・手動実行時にサイトを生成します。**配信状況の変化には再デプロイは不要**です。
+
+初回はGitHubの **Settings → Pages → Source → GitHub Actions** を選び、リポジトリの `main` にサイトの中身を置いてください。`scripts/build_site.py` は `schedule.html` をサイトマップに含め、`assets/streams/` の画像も最適化対象にします。ローカルで直接公開する場合は、全ファイルをGitHub Pagesへ配置するだけでもページは表示されます（自動SEO生成/画像最適化はワークフロー利用時）。
+
+### 5. セキュリティと公開前確認
+
+- 配信者本人の公開同意・画像の使用許諾を確認する。
+- GitHubの公開リポジトリには個人情報・応募審査情報・未発表の配信情報を保存しない。
+- 誤って公開した場合はファイルを消すだけでなくGit履歴等への残存も確認する。
+- 非公開にすべき情報の公開タイミングを `published:false` や `publishAt` だけに依存しない。
+- 外部リンクと動作、スマートフォンでの閲覧、日本語と英語の表示を公開前に確認する。
+
+---
+
 # Live Craft 公式サイト Ver.4.5
 
 **Ver.4.4の動画・イベント・NEWS・コラボ機能をすべて含む完成版。**

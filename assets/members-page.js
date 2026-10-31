@@ -363,6 +363,7 @@
     button.setAttribute('aria-label', `${member.name}（${generationLabel(generationOf(member))}）のプロフィールを見る`);
     button.setAttribute('aria-haspopup', 'dialog');
     button.title = `${member.name}のプロフィールを見る`;
+    if (typeof member.id === 'string') button.dataset.lc5MemberId = member.id;
 
     const chip = node('span', 'member-icon-chip', generationChip(generationOf(member)));
     const inner = node('span', 'member-icon-shell');
@@ -433,6 +434,7 @@
       return collection.length ? makeGroup(generation, collection) : null;
     }).filter(Boolean);
     grid.replaceChildren(...groups);
+    document.dispatchEvent(new CustomEvent('lc:streams-updated'));
     grid.hidden = !groups.length;
     resultStatus.textContent = `${selected.length}名を表示中`;
     if (!groups.length) {
