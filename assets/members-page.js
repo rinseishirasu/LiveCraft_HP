@@ -73,6 +73,48 @@
     return el;
   };
   const initials = name => [...name.trim()].slice(0, 2).join('').toUpperCase();
+  // Optional public profile fields. Nothing is rendered when left blank.
+  const clean = value => typeof value === 'string' ? value.trim() : '';
+  const publicColor = value => /^#[0-9a-fA-F]{6}$/.test(clean(value)) ? clean(value) : null;
+  const birthdayLabel = value => {
+    const match = /^(\d{2})-(\d{2})$/.exec(clean(value));
+    if (!match) return '';
+    const month = Number(match[1]);
+    const day = Number(match[2]);
+    const check = new Date(Date.UTC(2024, month - 1, day));
+    return check.getUTCMonth() + 1 === month && check.getUTCDate() === day ? `${month}月${day}日` : '';
+  };
+  const debutLabel = value => {
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(clean(value));
+    if (!match) return '';
+    const year = Number(match[1]), month = Number(match[2]), day = Number(match[3]);
+    const check = new Date(Date.UTC(year, month - 1, day));
+    return check.getUTCFullYear() === year && check.getUTCMonth() + 1 === month && check.getUTCDate() === day ? `${year}年${month}月${day}日` : '';
+  };
+  const visibleText = (value, limit = 240) => clean(value).slice(0, limit);
+  const tagText = value => {
+    const valueText = visibleText(value, 80).replace(/^＃/, '#').replace(/^#/, '');
+    return valueText ? '#' + valueText : '';
+  };
+  const addSection = (body, title, className = '') => {
+    const section = node('section', `profile-section profile-extra-section ${className}`.trim());
+    section.append(node('h3', 'profile-section-title', title));
+    body.append(section);
+    return section;
+  };
+  const makeExternalLink = (label, url, extraClass = '') => {
+    const parsed = safeUrl(url);
+    if (!parsed) return null;
+    const a = node('a', `profile-link ${extraClass}`.trim());
+    a.href = parsed;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.append(node('span', 'profile-link-label', label));
+    a.append(node('span', 'profile-link-arrow', '↗'));
+    a.setAttribute('aria-label', `${label}（新しいタブ）`);
+    return a;
+  };
+
 
   const createAvatar = (member, className, eager = false) => {
     const wrap = node('span', className);
@@ -128,11 +170,24 @@
       visualCard.append(node('span', 'profile-visual-role', member.role.trim()));
     }
     visualCard.append(node('span', 'profile-art-caption', 'LIVE CRAFT / MEMBER'));
+    // The optional member color complements the generation palette, rather than replacing it.
+    const personalColor = publicColor(member.memberColor);
+    if (personalColor) {
+      visualCard.style.setProperty('--member-color', personalColor);
+      const colorPill = node('span', 'profile-color-pill');
+      colorPill.append(node('span', 'profile-color-dot'));
+      colorPill.append(node('span', '', visibleText(member.colorName, 28) || 'MEMBER COLOR'));
+      visualCard.append(colorPill);
+    }
     side.append(visualCard);
 
     const body = applyTheme(node('div', 'profile-details'), generationOf(member));
     const header = node('div', 'profile-header');
     header.append(node('p', 'profile-eyebrow', 'LIVE CRAFT / MEMBER PROFILE'));
+    if (clean(member.catchphrase)) {
+      header.append(node('p', 'profile-catchphrase', visibleText(member.catchphrase, 140)));
+    }
+
     const title = node('h2', 'profile-title', member.name);
     title.id = 'profile-dialog-name';
     header.append(title);
@@ -157,6 +212,90 @@
     bioSection.append(node('h3', 'profile-section-title', 'ABOUT'));
     bioSection.append(node('p', 'profile-bio', typeof member.bio === 'string' && member.bio.trim() ? member.bio.trim() : 'プロフィールの紹介文は準備中です。'));
     body.append(bioSection);
+
+    // BIO / BASIC FACTS
+    const facts = [
+      ['誕生日', birthdayLabel(member.birthday)],
+      ['デビュー日', debutLabel(member.debutDate)],
+      ['ファンネーム', visibleText(member.fanName, 50)],
+      ['ファンマーク', visibleText(member.fanMark, 32)]
+    ].filter(([,value]) => value);
+    if (facts.length || personalColor) {
+      const section = addSection(body, 'PROFILE / 基本情報');
+      const dl = node('dl', 'profile-facts');
+      for (const [label, value] of facts) {
+        const cell = node('div', 'profile-fact');
+        cell.append(node('dt', '', label), node('dd', '', value));
+        dl.append(cell);
+      }
+      if (personalColor) {
+        const cell = node('div', 'profile-fact');
+        cell.append(node('dt', '', 'メンバーカラー'));
+        const dd = node('dd', 'profile-color-value');
+        const dot = node('span', 'profile-color-swatch');
+        dot.style.backgroundColor = personalColor;
+        dot.setAttribute('aria-hidden', 'true');
+        dd.append(dot, node('span', '', visibleText(member.colorName, 28) || personalColor));
+        cell.append(dd);
+        dl.append(cell);
+      }
+      section.append(dl);
+    }
+
+    const tags = [
+      ['配信タグ', tagText(member.streamTag)],
+      ['ファンアート', tagText(member.fanArtTag)]
+    ].filter(([,value]) => value);
+    if (tags.length) {
+      const section = addSection(body, 'HASHTAGS / ハッシュタグ');
+      const list = node('div', 'profile-hashtag-list');
+      for (const [label,value] of tags) {
+        const chip = node('div', 'profile-hashtag');
+        chip.append(node('span', 'profile-hashtag-kind', label), node('strong', 'profile-hashtag-value', value));
+        list.append(chip);
+      }
+      section.append(list);
+    }
+
+    const hobbies = Array.isArray(member.hobbies)
+      ? member.hobbies.filter(x => clean(x)).slice(0, 12).map(x => visibleText(x, 40))
+      : clean(member.hobbies) ? [visibleText(member.hobbies, 200)] : [];
+    if (hobbies.length) {
+      const section = addSection(body, 'LIKES / 好きなこと・趣味');
+      const list = node('div', 'profile-hobbies');
+      hobbies.forEach(x => list.append(node('span', 'profile-hobby', x)));
+      section.append(list);
+    }
+
+    const schedule = visibleText(member.schedule, 600);
+    const scheduleLink = makeExternalLink('配信予定を確認する', member.scheduleUrl, 'profile-schedule-link');
+    if (schedule || scheduleLink) {
+      const section = addSection(body, 'SCHEDULE / 配信スケジュール');
+      if (schedule) section.append(node('p', 'profile-schedule', schedule));
+      if (scheduleLink) section.append(scheduleLink);
+    }
+
+    const videoLink = makeExternalLink('自己紹介動画を見る', member.introVideoUrl, 'profile-video-link');
+    if (videoLink) {
+      const section = addSection(body, 'MOVIE / 自己紹介動画');
+      const frame = node('div', 'profile-video-panel');
+      frame.append(node('span', 'profile-video-play', '▶'));
+      const textWrap = node('div', 'profile-video-copy');
+      textWrap.append(node('strong', '', 'INTRODUCTION MOVIE'), node('span', '', '自己紹介を動画でチェック'));
+      frame.append(textWrap, videoLink);
+      section.append(frame);
+    }
+
+    const illustrator = visibleText(member.illustrator, 100);
+    if (illustrator) {
+      const section = addSection(body, 'CREDITS / キャラクターデザイン');
+      const credit = node('div', 'profile-credits');
+      credit.append(node('span', 'profile-credit-caption', 'Illustrator / Designer'));
+      const link = makeExternalLink(illustrator, member.illustratorUrl, 'profile-illustrator-link');
+      if (link) credit.append(link);
+      else credit.append(node('strong', 'profile-credit-name', illustrator));
+      section.append(credit);
+    }
 
     const linksSection = node('section', 'profile-section');
     linksSection.append(node('h3', 'profile-section-title', 'ACTIVITY / SNS'));
