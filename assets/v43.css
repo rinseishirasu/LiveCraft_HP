@@ -1,0 +1,45 @@
+/* Live Craft v4.3 | Member discovery, permanent profiles and sharing. */
+body.version-four .lc43-search-row{margin:23px 0 21px;padding:20px 22px;border:1px solid #e4ddf5;border-radius:24px;background:linear-gradient(125deg,#fff,#faf7ff 75%,#f0fbff);box-shadow:0 12px 30px #6652af0b}
+.lc43-search-row>label{display:block;font-size:.82rem;font-weight:900;color:#4b3c9b;margin-bottom:10px}
+.lc43-search-control{display:flex;align-items:center;gap:10px;padding:0 14px;min-height:52px;background:white;border-radius:15px;border:1px solid #dcd6ed}
+.lc43-search-control:focus-within{outline:3px solid #b3a5ff70;border-color:#8270e6}
+.lc43-search-control>span{font-size:1.6rem;color:#7364c6}
+.lc43-search-control input{border:0;outline:0;flex:1;min-width:0;font:inherit;font-size:1rem;color:#302957;background:transparent}
+.lc43-search-control button{background:#efedfa;color:#6557b6;border:0;border-radius:50%;width:29px;height:29px;cursor:pointer;font-weight:bold}
+.lc43-search-row p{font-size:.76rem;margin:9px 0 0;color:#78748f;line-height:1.6}
+body.version-four .lc43-modal-actions{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin-top:28px;padding-top:17px;border-top:1px solid #e6def9}
+.lc43-modal-actions>a,.lc43-modal-actions>button,.lc43-share-actions>a,.lc43-share-actions>button{min-height:45px;display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;padding:11px 16px;font:inherit;font-size:.78rem;font-weight:900;text-decoration:none;cursor:pointer;transition:transform .2s ease,background .2s ease}
+.lc43-action-main{background:#6956df;color:#fff;border:1px solid #6956df}.lc43-action-main:hover{background:#5240c6;transform:translateY(-2px)}
+.lc43-action-share{background:#292948;color:#fff;border:1px solid #292948}.lc43-action-share:hover{background:#4a466f;transform:translateY(-2px)}
+.lc43-action-copy{background:#fff;color:#5342a8;border:1px solid #ded4f5}.lc43-action-copy:hover{background:#f4f1ff;transform:translateY(-2px)}
+body.version-four .v41-home-members-grid:has(.lc43-featured-card){grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}
+body.version-four .lc43-featured-card{transform:none!important;min-height:214px;border-color:#fff;border-radius:24px;padding:13px;background:linear-gradient(150deg,color-mix(in srgb,var(--preview-accent,#7456e8),white 78%),#fff)}
+body.version-four .lc43-featured-card:nth-child(n){background:linear-gradient(145deg,color-mix(in srgb,var(--preview-accent,#7456e8),white 80%),#fff);transform:none}
+body.version-four .lc43-featured-card:hover{transform:translateY(-8px)!important;box-shadow:0 20px 35px #5e54a525}
+body.version-four .lc43-featured-card .v41-home-talent-visual{max-height:148px}
+body.version-four .lc43-featured-card .v41-home-talent-name{font-size:.8rem;line-height:1.45;color:#35305e;letter-spacing:.02em}
+.lc43-feature-generation{color:#6754ba;font-size:.62rem;letter-spacing:.08em;font-weight:900}
+body.version-four .lc43-breadcrumb{margin:38px 0 0;display:flex;align-items:center;flex-wrap:wrap;gap:10px;color:#787394;font-size:.76rem;font-weight:850}
+.lc43-breadcrumb a{color:#6553b6;text-decoration:none}.lc43-breadcrumb a:hover{text-decoration:underline}
+.lc43-profile-heading{margin:20px 0 26px}
+.lc43-profile-heading h1{font-size:clamp(2.2rem,5.3vw,4.6rem);font-weight:1000;margin:5px 0;color:#302957;overflow-wrap:anywhere}
+.lc43-profile-heading>p:last-child{color:#77718e;font-size:.92rem}
+body.version-four .lc43-full-profile{--member-accent:#7456e8;padding:25px;border-radius:34px;background:radial-gradient(circle at 6% 6%,color-mix(in srgb,var(--member-accent),transparent 84%),transparent 36%),linear-gradient(130deg,#fff,#faf7ff 68%,#f3fbff);border:1px solid #e6dff6;box-shadow:0 20px 50px #5e4a980f}
+body.version-four .lc43-full-profile .profile-layout{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:38px;align-items:start}
+body.version-four .lc43-full-profile .profile-art{max-width:none;width:100%;margin:0}
+body.version-four .lc43-full-profile .profile-visual-card{min-height:590px}
+body.version-four .lc43-full-profile .profile-character-stage{height:520px}
+body.version-four .lc43-full-profile .profile-header{border-bottom:1px solid #e8e1f2}
+body.version-four .lc43-full-profile .profile-title{font-size:clamp(2rem,3vw,3.3rem)}
+body.version-four .lc43-share-actions{display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid #eee7fa;padding-top:20px;margin-top:30px}
+body.version-four .lc43-not-found{padding:45px 25px;text-align:center}.lc43-not-found h2{font-size:clamp(1.3rem,3vw,2rem)}.lc43-not-found p{color:#77738f;margin-bottom:24px}
+body.version-four .lc43-page-actions{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap;margin:26px 0 75px}
+body.version-four .lc43-page-actions .button{min-height:48px}
+@media(max-width:850px){body.version-four .lc43-full-profile .profile-layout{grid-template-columns:1fr;gap:24px}body.version-four .lc43-full-profile .profile-art{width:100%;max-width:none;margin:0}body.version-four .lc43-full-profile .profile-visual-card{min-height:460px}body.version-four .lc43-full-profile .profile-character-stage{height:415px}}
+@media(max-width:700px){body.version-four .lc43-search-row{padding:16px;margin:17px 0}body.version-four .lc43-breadcrumb{margin-top:19px}body.version-four .lc43-profile-heading{margin-top:14px}body.version-four .lc43-full-profile{padding:12px;border-radius:23px}body.version-four .lc43-full-profile .profile-layout{gap:14px}body.version-four .lc43-full-profile .profile-visual-card{min-height:375px}body.version-four .lc43-full-profile .profile-character-stage{height:345px}body.version-four .lc43-full-profile .profile-details{padding:14px 7px 12px}body.version-four .lc43-modal-actions{align-items:stretch}body.version-four .lc43-modal-actions>*{flex:1}body.version-four .v41-home-members-grid:has(.lc43-featured-card){gap:10px}body.version-four .lc43-featured-card{min-height:165px;padding:8px;border-radius:18px}body.version-four .lc43-featured-card .v41-home-talent-visual{max-height:95px}body.version-four .lc43-featured-card .v41-home-talent-name{font-size:.66rem}body.version-four .lc43-page-actions{margin-bottom:50px}}
+@media(prefers-reduced-motion:reduce){body.version-four .lc43-featured-card,body.version-four .lc43-modal-actions>*{transition:none!important;transform:none!important}}
+
+/* Optional personal color sits alongside the generation theme. */
+body.version-four .member-icon-button[style*="--member-personal-color"] .member-icon-shell{border-bottom:4px solid var(--member-personal-color)}
+body.version-four .profile-layout[style*="--member-personal-color"] .profile-header{border-bottom:3px solid var(--member-personal-color)}
+body.version-four .lc43-full-profile{border-top:5px solid var(--member-accent,#7456E8)}

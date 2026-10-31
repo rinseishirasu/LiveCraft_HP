@@ -1,10 +1,12 @@
-/* Live Craft Ver.4.2 | 公開用メンバープロフィール
+/* Live Craft Ver.4.3 | 公開用メンバープロフィール
  * 下記は記入例です。コメント内のためサイトには公開されません。
  * メンバーの同意がある公開情報のみ登録してください。
  * 生年、本名、住所、非公開Discord、応募審査情報、個人の予定等は記載しないこと。
  * GitHub Pages のJSは誰でも閲覧でき、Git履歴にも残り得ます。
  *
  * フィールド                        形式・意味
+ * id: "your-name"                 公開URL用の固定ID（英小文字・数字・ハイフン）
+ * featured: true                   HOMEで優先表示したい場合のみ。任意
  * published: true                  掲載同意済みの場合のみ true
  * name: "活動名"                    必須
  * generation: 1                    所属期生（1, 2, 3...）
@@ -39,6 +41,8 @@
  *
  * 登録例（コメントを外して配列に追加すること）：
  * {
+ *   id: "sample-streamer",
+ *   featured: true,
  *   published: true,
  *   name: "サンプル配信者",
  *   generation: 1,
