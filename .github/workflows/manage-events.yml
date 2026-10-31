@@ -47,6 +47,10 @@ on:
         description: "画面表示の開始日時（任意）"
         required: false
         type: string
+      members:
+        description: "関連メンバーの固定IDまたは活動名（カンマ区切り・任意）"
+        required: false
+        type: string
       published:
         description: "公開状態（keep は既存値を維持 / 新規時は非公開）"
         required: true

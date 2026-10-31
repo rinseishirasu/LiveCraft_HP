@@ -41,11 +41,12 @@ jobs:
             tests/schedule-page.test.cjs
             tests/member-icon.test.cjs
             tests/platforms.test.cjs
+            tests/v6-features.test.cjs
           )
           missing=0
           for item in "${required[@]}"; do
             if [[ ! -f "$item" ]]; then
-              echo "::error file=$item::Missing $item. Copy the full tests/ directory from the Ver.5.1.6 patch to the repository root. If a script is missing, obtain it from the Ver.5.1.6 full package."
+              echo "::error file=$item::Missing $item. Copy the full tests/ directory from the Ver.6.0 feature release package to the repository root. If a script is missing, obtain it from the Ver.6.0 feature release package."
               echo "MISSING: $item"
               missing=1
             fi
@@ -53,7 +54,7 @@ jobs:
           if [[ "$missing" -ne 0 ]]; then
             {
               echo '## Live Craft: 管理・テスト用ファイルが不足しています'
-              echo 'エラーで表示されたパスに、Ver.5.1.6 パッチのファイルをアップロードしてください。'
+              echo 'エラーで表示されたパスに、Ver.6.0 機能統合版のファイルをアップロードしてください。'
               echo '保存先はリポジトリ直下の `tests/` と `scripts/` です。'
               echo 'アップロード後、コミットしてから Actions を新規実行してください。'
             } >> "$GITHUB_STEP_SUMMARY"
@@ -83,6 +84,7 @@ jobs:
           node tests/schedule-page.test.cjs
           node tests/member-icon.test.cjs
           node tests/platforms.test.cjs
+          node tests/v6-features.test.cjs
       - name: Commit validated change
         env:
           TARGET_FILE: ${{ steps.change.outputs.target }}
