@@ -1,0 +1,84 @@
+name: "Live Craft | PROJECTS管理"
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: "操作"
+        required: true
+        type: choice
+        options: [upsert, hide, delete]
+        default: upsert
+      id:
+        description: "固定ID（project-01など）"
+        required: true
+        type: string
+      title:
+        description: "企画名"
+        required: false
+        type: string
+      summary:
+        description: "短い紹介文"
+        required: false
+        type: string
+      description:
+        description: "公開用の企画説明（内部情報は入力しない）"
+        required: false
+        type: string
+      status:
+        description: "進捗状態"
+        required: false
+        type: string
+      category:
+        description: "カテゴリ"
+        required: false
+        type: string
+      cover:
+        description: "画像: assets/projects/xxx.webp"
+        required: false
+        type: string
+      members:
+        description: "公開メンバーID（カンマ区切り）"
+        required: false
+        type: string
+      relatedVideos:
+        description: "関連動画ID（カンマ区切り）"
+        required: false
+        type: string
+      relatedCollabs:
+        description: "関連コラボID（カンマ区切り）"
+        required: false
+        type: string
+      startDate:
+        description: "開始日（YYYY-MM-DD）"
+        required: false
+        type: string
+      externalUrl:
+        description: "公開サイトURL（https://）"
+        required: false
+        type: string
+      featured:
+        description: "トップページで優先表示"
+        required: true
+        type: choice
+        options: [keep, "true", "false"]
+        default: keep
+      published:
+        description: "公開（keep/true/false）"
+        required: true
+        type: choice
+        options: [keep, "true", "false"]
+        default: keep
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+jobs:
+  update_and_publish:
+    uses: ./.github/workflows/_manage-and-publish.yml
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    with:
+      resource: projects
+      form: ${{ toJSON(inputs) }}

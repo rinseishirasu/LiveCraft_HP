@@ -22,6 +22,7 @@ on:
           - videos
           - events
           - collabs
+          - projects
           - recruitment
         default: all
       query:
@@ -59,6 +60,8 @@ jobs:
             tests/schedule-page.test.cjs
             tests/member-icon.test.cjs
             tests/platforms.test.cjs
+            tests/v6-features.test.cjs
+            tests/v61.test.cjs
           )
           missing=0
           for item in "${required[@]}"; do
@@ -131,6 +134,8 @@ jobs:
             tests/schedule-page.test.cjs
             tests/member-icon.test.cjs
             tests/platforms.test.cjs
+            tests/v6-features.test.cjs
+            tests/v61.test.cjs
           )
           missing=0
           for item in "${required[@]}"; do
@@ -173,9 +178,11 @@ jobs:
           node tests/schedule-page.test.cjs
           node tests/member-icon.test.cjs
           node tests/platforms.test.cjs
+          node tests/v6-features.test.cjs
+          node tests/v61.test.cjs
       - name: Commit only existing public-data sources
         run: |
-          git add -- assets/members.js assets/streams.js assets/news.js assets/videos.js assets/events.js assets/collabs.js
+          git add -- assets/members.js assets/streams.js assets/news.js assets/videos.js assets/events.js assets/collabs.js assets/projects.js
           if ! git diff --cached --quiet; then
             git -c user.name='github-actions[bot]' \
                 -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
