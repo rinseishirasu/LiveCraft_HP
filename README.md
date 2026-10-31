@@ -1,3 +1,7 @@
+# Live Craft Ver.6.2 正式版
+
+Ver.6.1.1 を基に FAN EXPERIENCE + LIVE EXPERIENCE を統合しました。新しい機能・手順は `RELEASE_NOTES_v6.2.md`、`FEATURES_V6.2.md`、`PATCH_README_V6.1.1_TO_V6.2.md` を参照してください。
+
 # Ver.6.1 FIRST IMPRESSION × CROSSOVER
 
 旧計画のVer.6.1とVer.6.2を統合しました。導入は`START_HERE_V6.1.md`、変更点は`RELEASE_NOTES_v6.1.md`を参照してください。
