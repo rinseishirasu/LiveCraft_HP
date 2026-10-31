@@ -1,0 +1,48 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const vm=require('node:vm');
+const path=require('node:path');
+const root=path.join(__dirname,'..');
+const calendar=require('../assets/calendar-utils.js');
+const start=Date.parse('2026-11-01T20:00:00+09:00');
+const event={id:'stream-001',memberId:'member-a',member:{name:'テスト🌷'},title:'ゲーム,配信; テスト\\開始\n第二部',platform:'YouTube',status:'scheduled',startMs:start,endMs:start+3600000,streamUrl:'https://example.com/watch?v=a',description:'来てね!'};
+const ics=calendar.make([event,{...event,id:'cancelled',status:'cancelled'}],'https://example.com/');
+assert.equal((ics.match(/BEGIN:VEVENT/g)||[]).length,1);
+assert.match(ics,/DTSTART:20261101T110000Z/);
+assert.match(ics,/DTEND:20261101T120000Z/);
+assert.match(ics,/UID:stream-001@example.com/);
+assert.match(ics,/\\,配信\\;/);
+assert.match(ics,/\\n第二部/);
+assert.match(ics,/URL:https:\/\/example.com\/watch\?v=a/);
+assert.ok(ics.endsWith('\r\n'));
+assert.ok(!ics.includes('\r\nBEGIN:VEVENT\n'));
+assert.equal(calendar.make([], 'https://example.com/').includes('BEGIN:VEVENT'),false);
+const longIcs=calendar.make([{...event,title:'長'.repeat(65)}]);
+for(const line of longIcs.split('\r\n'))assert.ok(Buffer.byteLength(line,'utf8')<=75,`line too long: ${Buffer.byteLength(line,'utf8')}`);
+
+const stored={};const events={};const writes=[];
+const fakeDocument={querySelectorAll:()=>[],dispatchEvent:e=>writes.push(e.type),addEventListener:(kind,cb)=>{events[kind]=cb;}};
+const fakeWindow={LiveCraftMembers:{key:m=>m.id},LC_I18N:{lang:()=> 'ja'},addEventListener:()=>{}};
+const context={window:fakeWindow,document:fakeDocument,localStorage:{getItem:k=>stored[k]||null,setItem:(k,v)=>{stored[k]=v;}},CustomEvent:class{constructor(type,opts){this.type=type;this.detail=opts?.detail;}}};
+vm.runInNewContext(fs.readFileSync(path.join(root,'assets/favorites.js'),'utf8'),context);
+const favorites=fakeWindow.LC6Favorites;
+assert.equal(favorites.has({id:'member-a',name:'テスト🌷'}),false);
+assert.equal(favorites.toggle({id:'member-a',name:'テスト🌷'}),true);
+assert.equal(favorites.has({id:'member-a'}),true);
+assert.equal(favorites.count([{id:'member-a'},{id:'member-b'}]),1);
+assert.equal(favorites.toggle({id:'member-a'}),false);
+assert.equal(favorites.has('member-a'),false);
+assert.ok(writes.includes('lc6:favorites-changed'));
+const pages=['members.html','member.html','schedule.html','index.html'];
+for(const file of pages){
+ const html=fs.readFileSync(path.join(root,file),'utf8');
+ assert.match(html,/assets\/favorites\.js/);
+ assert.match(html,/assets\/calendar-utils\.js/);
+ const scripts=[...html.matchAll(/<script\s+src="([^"]+)"/g)].map(m=>m[1]);
+ assert.ok(scripts.indexOf('assets/favorites.js')<scripts.indexOf('assets/stream-widgets.js'));
+ assert.ok(scripts.indexOf('assets/calendar-utils.js')<scripts.indexOf('assets/stream-widgets.js'));
+}
+assert.match(fs.readFileSync(path.join(root,'schedule.html'),'utf8'),/data-lc6-week-export/);
+assert.match(fs.readFileSync(path.join(root,'members.html'),'utf8'),/data-lc6-favorites-filter/);
+console.log('PASS: calendar export (JST to UTC, escaping, folding, status), favorites persistence and page integration');

@@ -1,3 +1,23 @@
+# LIVE CRAFT Ver.6.0 最終統合版
+
+デザイン刷新・お気に入り・配信カレンダー登録に加え、横断検索、次回配信、予定URL共有、メンバー関連活動を含む最終統合版です。
+
+新機能・更新手順: [`FEATURES_V6_FINAL.md`](FEATURES_V6_FINAL.md)
+
+# Live Craft 公式サイト / Ver.6.0
+
+**最新リリース: Ver.6.0（全17ページのデザイン刷新＋新機能統合版）**。`RELEASE_NOTES_v6.0.md`、`FEATURES_V6.md`、`DESIGN_V6.md` をご覧ください。新機能はお気に入り、配信予定のお気に入り/媒体別絞り込み、カレンダー登録（.ics）です。既存のGitHub Actions管理を維持しています。既存データ保護のため差分パッチで更新してください。
+
+---
+
+# Live Craft Ver.5.1.6｜GitHub Actionsのテストファイル不足対策
+
+`Cannot find module .../tests/data-format.test.cjs` に対応するため、更新パッチには `tests/` の一式を収録しています。`GitHub Actions` の実行前に必要ファイルを確認する処理も追加しました。
+
+**GitHubのリポジトリ直下に `tests/data-format.test.cjs` を配置してください。** そのほかの登録データは上書き不要です。詳細は [`PATCH_README_V5.1.5_TO_V5.1.6.md`](PATCH_README_V5.1.5_TO_V5.1.6.md) と [`RELEASE_NOTES_v5.1.6.md`](RELEASE_NOTES_v5.1.6.md) を参照してください。
+
+---
+
 # Live Craft Ver.5.1.5｜既存メンバー登録時のActionsテスト失敗を修正
 
 [修正内容と適用手順](RELEASE_NOTES_v5.1.5.md)を参照してください。公開データには変更を加えていません。

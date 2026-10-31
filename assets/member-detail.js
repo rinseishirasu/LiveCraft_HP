@@ -29,5 +29,5 @@
     try{await navigator.clipboard.writeText(window.LiveCraftMembers.urlFor(member));copy.textContent='コピーしました';}
     catch{copy.textContent='URLをコピーできませんでした';}
   });
-  actions.append(x,copy);wrap.append(actions);
+  actions.append(x,copy);if(window.LC6Favorites){const favorite=window.LC6Favorites.createButton(member,'lc6-favorite-in-modal');actions.append(favorite);window.LC6Favorites.updateButtons();}wrap.append(actions);
 })();
