@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#171d2b">
+<title>LIVE CRAFT / CREATOR DESK 7.0</title>
+<link rel="icon" href="../assets/favicon.png" type="image/png">
+<link rel="stylesheet" href="studio.css">
+<script src="../assets/members.js"></script><script src="../assets/streams.js"></script><script src="../assets/projects.js"></script><script src="../assets/news.js"></script><script src="../assets/videos.js"></script><script src="../assets/events.js"></script><script src="../assets/collabs.js"></script>
+<script src="studio.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#editor">編集画面に移動</a>
+<div class="app">
+ <aside class="sidebar" aria-label="管理コンテンツ">
+  <a class="identity" href="../index.html"><span class="identity-mark">✳</span><span><strong>Live Craft<span class="dot">.</span></strong><small>CREATOR DESK / 07</small></span></a>
+  <div class="workspace"><span class="workspace-dot"></span><span><b>PUBLIC CONTENT</b><small>ブラウザー編集ツール</small></span></div>
+  <p class="nav-caption">CONTENT / 公開データ</p>
+  <nav id="resource-tabs" class="resource-tabs" aria-label="データの種類"></nav>
+  <div class="sidebar-foot"><span class="step-num">01 / 03</span><strong>編集 → 確認 → ダウンロード</strong><p>GitHubへの書き込みや自動公開は行いません。</p><a href="https://github.com/rinseishirasu/LiveCraft_HP/actions" target="_blank" rel="noopener noreferrer">GitHub Actions を開く ↗</a></div>
+ </aside>
+ <div class="workspace-main">
+  <header class="toolbar"><button class="mobile-menu" type="button" id="menu-button" aria-controls="resource-tabs" aria-expanded="false">☰ メニュー</button><div class="breadcrumb">LIVE CRAFT <span>/</span> CREATOR DESK <span>/</span> <strong id="toolbar-resource">MEMBERS</strong></div><div class="toolbar-right"><span class="dot-status"></span><span>LOCAL EDITOR</span><span class="app-version">V7.0</span></div></header>
+  <main id="editor" class="main-content">
+   <div class="main-title"><div><div class="kicker">CREATOR DESK / CONTENT MANAGEMENT</div><h1 id="resource-heading">メンバーを管理<span class="heading-dot">.</span></h1><p id="resource-description" class="subtitle">メンバーの公開プロフィールを管理します。</p></div><div class="head-actions"><button type="button" class="btn ghost" id="import-button">↥ 既存ファイルを読み込む</button><button type="button" class="btn accent" id="download-button">変更ファイルを書き出す ↗</button></div></div>
+   <div class="notice" role="note"><span class="notice-symbol">i</span><p><strong>この管理画面はログイン画面ではありません。</strong> 編集内容はこのブラウザー内だけに保持され、GitHubへの書き込み権限はありません。<strong>未発表企画・個人情報・メンバー限定ノウハウを入力しないでください。</strong> 書き出したJSをGitHubに反映すると内容が一般公開されます。</p></div>
+   <div class="stat-row"><div class="stat"><span>REGISTERED</span><strong id="stat-total">00</strong><small>登録件数</small></div><div class="stat"><span>PUBLISHED</span><strong id="stat-published">00</strong><small>公開中</small></div><div class="stat"><span>CHANGED</span><strong id="stat-changed">00</strong><small>この画面での編集件数</small></div><div class="stat stat-tip"><span>NEXT STEP ↗</span><strong>Export &amp; upload</strong><small>公開はGitHubで実施</small></div></div>
+   <div class="edit-layout">
+    <section class="records-panel" aria-label="登録済みデータ一覧"><div class="panel-head"><div><div class="kicker">02 / RECORDS</div><h2 id="list-title">登録一覧</h2></div><button type="button" id="new-button" class="btn mini accent">＋ 新規作成</button></div><label class="search-wrap"><span aria-hidden="true">⌕</span><input id="record-search" type="search" placeholder="名前やIDで検索" autocomplete="off" aria-label="登録データを検索"></label><div class="records" id="records" role="listbox" aria-label="登録データ"></div><div class="records-foot" id="records-foot">クリックすると編集できます。</div></section>
+    <section class="form-panel" aria-label="編集フォーム"><div class="panel-head form-head"><div><div class="kicker">03 / EDIT RECORD</div><h2 id="form-title">項目を選択してください</h2><p id="form-subtitle">保存してもまだ公開されません。</p></div><span id="form-status" class="status-chip">未選択</span></div><form id="record-form" novalidate><div id="form-fields" class="form-grid"></div><div id="form-error" class="form-error" role="alert" aria-live="polite" hidden></div><div class="form-bottom"><button type="submit" class="btn primary" id="save-button">編集内容を反映する</button><button type="button" class="btn ghost" id="duplicate-button">複製</button><button type="button" class="btn text-danger" id="delete-button">削除</button></div></form><div class="empty-form" id="empty-form"><span>✳</span><h3>Make something visible.</h3><p>左側から編集する項目を選ぶか、新規作成してください。</p></div></section>
+   </div>
+   <div class="help-strip"><div><span class="kicker">HOW TO PUBLISH / 反映手順</span><strong>編集 → ダウンロード → GitHubへアップロード</strong><p>出力される <code>assets/〇〇.js</code> を同名ファイルと置き換え、GitHub Pagesの公開が完了すると反映されます。公開前にバックアップと差分を確認してください。</p></div><a href="https://github.com/rinseishirasu/LiveCraft_HP/tree/main/assets" target="_blank" rel="noopener noreferrer">GitHubのassetsフォルダーを開く ↗</a></div>
+   <p class="version-foot">LIVE CRAFT / CREATOR DESK 7.0 · No passwords · No GitHub token · Public-content editor only.</p>
+  </main>
+ </div>
+</div>
+<input type="file" id="import-file" accept=".js,.json,text/javascript,application/json" hidden>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

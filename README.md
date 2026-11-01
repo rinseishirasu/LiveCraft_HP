@@ -1,3 +1,15 @@
+# Live Craft Ver.7.0 / CREATOR EDITION
+
+公開サイト全24ページのデザイン刷新、および **CREATOR DESK** ブラウザー管理UIを追加しました。
+
+- 新規利用：`index.html`、管理UI：`studio/index.html`
+- 操作ガイド：`OPERATIONS_V7.0.md`
+- リリースノート：`RELEASE_NOTES_v7.0.md`
+- **現行のサイトへ適用する場合は差分更新パッチを使用し、既存の `assets/*.js` や画像は上書きしないでください。**
+- 管理UIは公開データ専用の編集・ダウンロード機能。GitHubに直接書き込まず、認証画面でもありません。
+
+---
+
 # Live Craft Ver.6.3 / 運営品質アップデート
 
 **今回の更新内容**は [`OPERATIONS_V6.3.md`](OPERATIONS_V6.3.md) をご覧ください。

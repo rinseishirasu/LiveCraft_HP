@@ -1,3 +1,7 @@
+**Ver.7.0を既存サイトへ適用する際は、登録データを含まない更新パッチを使用してください。**
+
+CREATOR DESK: `studio/index.html` / 詳細は `OPERATIONS_V7.0.md`。
+
 ## Ver.6.3の管理・プレビューは [OPERATIONS_V6.3.md](OPERATIONS_V6.3.md) を参照してください。
 
 # Live Craft Ver.6.2.1 | LOOK BOOK画像パス修正版

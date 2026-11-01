@@ -18,6 +18,9 @@ def build(destination,base_url):
     if out==ROOT:raise ValueError('出力先をソースフォルダと同じにすることはできません。')
     for p in ROOT.glob('*.html'):shutil.copy2(p,out/p.name)
     shutil.copytree(ROOT/'assets',out/'assets',dirs_exist_ok=True)
+    # Creator Desk is a browser-local PUBLIC data editor, not a login or private admin.
+    if (ROOT/'studio').is_dir():
+        shutil.copytree(ROOT/'studio',out/'studio',dirs_exist_ok=True)
     (out/'.nojekyll').write_text('')
     # Images referenced by content arrays are rewritten to optimized WebP if actually smaller.
     if Image:
