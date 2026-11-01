@@ -50,6 +50,7 @@ jobs:
             tests/v62.test.cjs
             tests/v621.test.cjs
             tests/v63.test.cjs
+            tests/v7.test.cjs
             scripts/content_audit.cjs
             scripts/asset_audit.py
             scripts/change_report.cjs
@@ -100,6 +101,7 @@ jobs:
           node tests/v62.test.cjs
           node tests/v621.test.cjs
           node tests/v63.test.cjs
+          node tests/v7.test.cjs
       - name: Validate cross-file references and published data
         run: node scripts/content_audit.cjs --strict --output review/site-audit.md
       - name: Review change before publishing
