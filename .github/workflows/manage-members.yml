@@ -40,11 +40,11 @@ on:
         required: false
         type: string
       avatar:
-        description: "一覧アイコン: assets/members/xxx.webp"
+        description: "一覧アイコン: assets/members/xxx.webp または assets/members/ID/xxx.webp"
         required: false
         type: string
       fullbody:
-        description: "詳細立ち絵: assets/members/xxx.webp"
+        description: "詳細立ち絵: assets/members/xxx.webp または assets/members/ID/xxx.webp"
         required: false
         type: string
       genres:
