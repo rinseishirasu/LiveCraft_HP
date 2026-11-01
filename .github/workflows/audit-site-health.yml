@@ -1,0 +1,48 @@
+name: "Live Craft | サイト品質監査（読取専用）"
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Run all content unit tests
+        run: |
+          node tests/legacy-inventory.test.cjs
+          node tests/manage-content.test.cjs
+          node tests/data-format.test.cjs
+          node tests/streams.test.cjs
+          node tests/schedule-page.test.cjs
+          node tests/member-icon.test.cjs
+          node tests/platforms.test.cjs
+          node tests/v6-features.test.cjs
+          node tests/v61.test.cjs
+          node tests/v62.test.cjs
+          node tests/v621.test.cjs
+          node tests/v63.test.cjs
+      - name: Create public data integrity report
+        run: node scripts/content_audit.cjs --output quality-reports/content-audit.md
+      - run: python -m pip install --disable-pip-version-check "Pillow>=11,<13"
+      - name: Create image quality report (including nested folders)
+        run: python scripts/asset_audit.py --output quality-reports/image-audit.md
+      - name: Build site without deployment
+        run: python scripts/build_site.py --output quality-preview
+      - uses: actions/upload-artifact@v4
+        with:
+          name: livecraft-site-health-report
+          path: quality-reports/
+          retention-days: 7
+          if-no-files-found: error
+      - name: Summary
+        run: |
+          echo '## Live Craft サイト品質監査' >> "$GITHUB_STEP_SUMMARY"
+          cat quality-reports/content-audit.md >> "$GITHUB_STEP_SUMMARY"
+          echo '画像検査レポートは Actions → Artifacts からダウンロードできます。監査処理は公開データを変更せず、デプロイも実行しません。' >> "$GITHUB_STEP_SUMMARY"

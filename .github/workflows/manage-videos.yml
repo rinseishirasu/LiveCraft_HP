@@ -2,6 +2,11 @@ name: "Live Craft | 動画管理"
 on:
   workflow_dispatch:
     inputs:
+      preview_only:
+        description: "公開前確認のみ（ON=プレビュー、OFF=公開・保存）"
+        required: true
+        type: boolean
+        default: true
       operation:
         description: "操作"
         required: true
@@ -83,3 +88,4 @@ jobs:
     with:
       resource: videos
       form: ${{ toJSON(inputs) }}
+      preview_only: ${{ inputs.preview_only }}

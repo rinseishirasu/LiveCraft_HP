@@ -8,6 +8,10 @@ on:
       form:
         required: true
         type: string
+      preview_only:
+        required: false
+        type: boolean
+        default: true
 permissions:
   contents: read
 concurrency:
@@ -44,11 +48,16 @@ jobs:
             tests/v6-features.test.cjs
             tests/v61.test.cjs
             tests/v62.test.cjs
+            tests/v621.test.cjs
+            tests/v63.test.cjs
+            scripts/content_audit.cjs
+            scripts/asset_audit.py
+            scripts/change_report.cjs
           )
           missing=0
           for item in "${required[@]}"; do
             if [[ ! -f "$item" ]]; then
-              echo "::error file=$item::Missing $item. Copy the full tests/ directory from the Ver.6.2 release package to the repository root. If a script is missing, obtain it from the Ver.6.2 release package."
+              echo "::error file=$item::Missing $item. Copy the full tests/ directory from the Ver.6.3 release package to the repository root. If a script is missing, obtain it from the Ver.6.3 release package."
               echo "MISSING: $item"
               missing=1
             fi
@@ -56,7 +65,7 @@ jobs:
           if [[ "$missing" -ne 0 ]]; then
             {
               echo '## Live Craft: 管理・テスト用ファイルが不足しています'
-              echo 'エラーで表示されたパスに、Ver.6.2 正式版のファイルをアップロードしてください。'
+              echo 'エラーで表示されたパスに、Ver.6.3 正式版のファイルをアップロードしてください。'
               echo '保存先はリポジトリ直下の `tests/` と `scripts/` です。'
               echo 'アップロード後、コミットしてから Actions を新規実行してください。'
             } >> "$GITHUB_STEP_SUMMARY"
@@ -89,7 +98,51 @@ jobs:
           node tests/v6-features.test.cjs
           node tests/v61.test.cjs
           node tests/v62.test.cjs
-      - name: Commit validated change
+          node tests/v621.test.cjs
+          node tests/v63.test.cjs
+      - name: Validate cross-file references and published data
+        run: node scripts/content_audit.cjs --strict --output review/site-audit.md
+      - name: Review change before publishing
+        env:
+          TARGET_FILE: ${{ steps.change.outputs.target }}
+          RESOURCE: ${{ inputs.resource }}
+          PREVIEW_ONLY: ${{ inputs.preview_only }}
+        run: node scripts/change_report.cjs
+      - name: Install image optimizer
+        run: python -m pip install --disable-pip-version-check "Pillow>=11,<13"
+      - name: Audit images including member subfolders (read-only)
+        run: python scripts/asset_audit.py --output review/image-audit.md
+      - name: Configure Pages (publish only)
+        if: ${{ !inputs.preview_only }}
+        id: pages
+        uses: actions/configure-pages@v5
+      - name: Build site from the validated working tree
+        env:
+          PAGES_BASE_URL: ${{ steps.pages.outputs.base_url }}
+        run: python scripts/build_site.py --output _site
+      - name: Downloadable preview (no commit or public deployment)
+        if: ${{ inputs.preview_only }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: livecraft-preview-${{ inputs.resource }}
+          path: _site
+          retention-days: 7
+          if-no-files-found: error
+      - name: Upload review and image reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: livecraft-review-${{ inputs.resource }}
+          path: review/
+          retention-days: 7
+          if-no-files-found: error
+      - name: "Preview completed: no commit or deployment"
+        if: ${{ inputs.preview_only }}
+        run: |
+          echo '## ✅ 公開前プレビューが完成しました' >> "$GITHUB_STEP_SUMMARY"
+          echo '変更は GitHub に保存されず、サイトも公開されていません。Actions の Artifacts から preview と review をダウンロードして確認できます。' >> "$GITHUB_STEP_SUMMARY"
+          echo '承認後は同じ管理フォームで「公開前確認のみ」を OFF にして新規実行してください。' >> "$GITHUB_STEP_SUMMARY"
+      - name: Commit validated change (publish only)
+        if: ${{ !inputs.preview_only }}
         env:
           TARGET_FILE: ${{ steps.change.outputs.target }}
         run: |
@@ -102,16 +155,8 @@ jobs:
           else
             echo 'No data changes; continuing with publish.'
           fi
-      - name: Install image optimizer
-        run: python -m pip install --disable-pip-version-check "Pillow>=11,<13"
-      - name: Configure Pages
-        id: pages
-        uses: actions/configure-pages@v5
-      - name: Build and optimize site from updated worktree
-        env:
-          PAGES_BASE_URL: ${{ steps.pages.outputs.base_url }}
-        run: python scripts/build_site.py --output _site
-      - name: Upload Pages build
+      - name: Upload Pages build (publish only)
+        if: ${{ !inputs.preview_only }}
         uses: actions/upload-pages-artifact@v4
         with:
           path: _site
@@ -127,6 +172,7 @@ jobs:
             echo '詳細: リポジトリの ACTIONS_ERROR_GUIDE.md'
           } >> "$GITHUB_STEP_SUMMARY"
   deploy:
+    if: ${{ !inputs.preview_only }}
     needs: update_build
     runs-on: ubuntu-24.04
     environment:

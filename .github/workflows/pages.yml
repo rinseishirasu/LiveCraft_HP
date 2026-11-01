@@ -33,11 +33,15 @@ jobs:
             tests/v6-features.test.cjs
             tests/v61.test.cjs
             tests/v62.test.cjs
+            tests/v621.test.cjs
+            tests/v63.test.cjs
+            scripts/content_audit.cjs
+            scripts/asset_audit.py
           )
           missing=0
           for item in "${required[@]}"; do
             if [[ ! -f "$item" ]]; then
-              echo "::error file=$item::Missing $item. Copy the full tests/ directory from the Ver.6.2 release package to the repository root. If a script is missing, obtain it from the Ver.6.2 release package."
+              echo "::error file=$item::Missing $item. Copy the full tests/ directory from the Ver.6.3 release package to the repository root. If a script is missing, obtain it from the Ver.6.3 release package."
               echo "MISSING: $item"
               missing=1
             fi
@@ -45,7 +49,7 @@ jobs:
           if [[ "$missing" -ne 0 ]]; then
             {
               echo '## Live Craft: 管理・テスト用ファイルが不足しています'
-              echo 'エラーで表示されたパスに、Ver.6.2 正式版のファイルをアップロードしてください。'
+              echo 'エラーで表示されたパスに、Ver.6.3 正式版のファイルをアップロードしてください。'
               echo '保存先はリポジトリ直下の `tests/` と `scripts/` です。'
               echo 'アップロード後、コミットしてから Actions を新規実行してください。'
             } >> "$GITHUB_STEP_SUMMARY"
@@ -65,9 +69,16 @@ jobs:
         run: |
           node tests/v61.test.cjs
           node tests/v62.test.cjs
+          node tests/v621.test.cjs
+          node tests/v63.test.cjs
       - name: Validate Ver.6.0 features
         run: node tests/v6-features.test.cjs
+      - name: Validate published content references
+        run: node scripts/content_audit.cjs --strict --output site-health.md
       - run: python -m pip install --disable-pip-version-check "Pillow>=11,<13"
+      - name: Validate and report image quality
+        run: python scripts/asset_audit.py --output image-health.md
+
       - id: pages
         uses: actions/configure-pages@v5
       - name: Build SEO and optimized site

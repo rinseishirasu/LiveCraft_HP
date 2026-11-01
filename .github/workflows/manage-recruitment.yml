@@ -2,6 +2,11 @@ name: "Live Craft | 募集・公式設定管理"
 on:
   workflow_dispatch:
     inputs:
+      preview_only:
+        description: "公開前確認のみ（ON=プレビュー、OFF=公開・保存）"
+        required: true
+        type: boolean
+        default: true
       recruitmentMode:
         description: "募集モード"
         required: true
@@ -59,3 +64,4 @@ jobs:
     with:
       resource: recruitment
       form: ${{ toJSON(inputs) }}
+      preview_only: ${{ inputs.preview_only }}
