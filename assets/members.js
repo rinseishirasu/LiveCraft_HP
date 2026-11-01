@@ -30,7 +30,26 @@ window.LIVE_CRAFT_MEMBERS = [
         "label": "X",
         "url": "https://x.com/ShirasuRinsei"
       }
+
+    "links": [
+      {
+        "label": "YouTube",
+        "url": "https://www.youtube.com/@ShirasuRinsei"
+      },
+      {
+        "label": "X",
+        "url": "https://x.com/ShirasuRinsei"
+      }
+    ],
+    "outfits": [
+      {
+        "label": "魔法の学び舎",
+        "image": "assets/members/rinsei-shirasu/rinsei-shirasu-fullbody-magic.png"
+      },
+      {
+        "label": "ﾘﾒｲｸｽﾀｲﾙ",
+        "image": "assets/members/rinsei-shirasu/rinsei-shirasu-fullbody-remake.png"
+      }
     ]
-    "outfits":[{"label":"魔法の学び舎","image":"assets/members/rinsei-shirasu/rinsei-shirasu-fullbody-magic.png"},{"label":"ﾘﾒｲｸｽﾀｲﾙ","image":"assets/members/rinsei-shirasu/rinsei-shirasu-fullbody-remake.png"}]}
   }
 ];
