@@ -43,14 +43,5 @@ window.LIVE_CRAFT_MEMBERS = [
         "image": "assets/members/rinsei-shirasu/rinsei-shirasu-fullbody-remake.png"
       }
     ]
-  },
-  {
-    "id": "itsumin",
-    "published": true,
-    "name": "いつみん",
-    "generation": 1,
-    "role": "運営",
-    "agency": "個人勢",
-    "primaryPlatform": "REALITY"
   }
 ];
