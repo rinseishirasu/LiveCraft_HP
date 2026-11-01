@@ -1,4 +1,6 @@
-/* Live Craft 公開コンテンツ。本人の同意がある公開情報のみ登録してください。 */
+/* Live Craft Ver.5.1 | Public members data. Managed from GitHub Actions.
+ * Repository files and Git history are public. Do not store private or unapproved information.
+ */
 window.LIVE_CRAFT_MEMBERS = [
   {
     "published": true,
@@ -41,5 +43,10 @@ window.LIVE_CRAFT_MEMBERS = [
         "image": "assets/members/rinsei-shirasu/rinsei-shirasu-fullbody-remake.png"
       }
     ]
+  },
+  {
+    "id": "itsumin",
+    "published": true,
+    "name": "いつみん"
   }
 ];
