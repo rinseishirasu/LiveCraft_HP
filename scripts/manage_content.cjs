@@ -74,7 +74,10 @@ function parseField(value, type, field) {
   }
   if (type.startsWith('image:')) {
     const s=str(value,field,300), directory=type.split(':')[1];
-    if (s && !new RegExp(`^assets/${directory}/[a-zA-Z0-9_.-]+\\.(png|jpg|jpeg|webp|avif)$`).test(s)) fail(`${field}: place image under assets/${directory}/`);
+    const isValid = directory === 'members'
+      ? /^assets\/members\/(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9_-][a-zA-Z0-9_.-]*\.(png|jpg|jpeg|webp|avif)$/.test(s)
+      : new RegExp(`^assets/${directory}/[a-zA-Z0-9_.-]+\\.(png|jpg|jpeg|webp|avif)$`).test(s);
+    if (s && !isValid) fail(`${field}: place image under assets/${directory}/ (member subfolders allowed)`);
     return s;
   }
   if (type === 'generation') {

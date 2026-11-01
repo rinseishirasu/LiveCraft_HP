@@ -12,6 +12,11 @@ assert.equal(r.safeProfileIcon({avatar:'assets/members/icon.webp',fullbody:'asse
 assert.equal(r.safeProfileIcon({avatar:'assets/members/standing.webp',fullbody:'assets/members/standing.webp'}),null);
 assert.equal(r.safeProfileIcon({fullbody:'assets/members/standing.webp'}),null);
 assert.equal(r.safeProfileIcon({avatar:'../unsafe.png',fullbody:'assets/members/standing.webp'}),null);
+// Ver.6.2.1: member-specific image directories are supported, but traversal is not.
+assert.equal(r.safeProfileIcon({avatar:'assets/members/creator-a/icon.png',fullbody:'assets/members/creator-a/fullbody.png'}),'assets/members/creator-a/icon.png');
+assert.equal(r.safeAvatar('assets/members/creator-a/looks/spring.webp'),'assets/members/creator-a/looks/spring.webp');
+for(const bad of ['assets/members/../secret.png','assets/members/creator-a/../secret.png','assets/members/creator-a//icon.png','https://example.com/x.png','assets/members/creator-a/icon.svg']) assert.equal(r.safeAvatar(bad),null);
+
 for(const js of ['members-page.js','profile-ui.js']){
  const code=fs.readFileSync(path.join(base,js),'utf8');
  assert.match(code,/avatarPath\(member\.avatar\) !== fullbodyPath\(member\.fullbody\)/);

@@ -1,3 +1,9 @@
+# Live Craft Ver.6.2.1 | LOOK BOOK画像パス修正版
+
+メンバー専用フォルダー（例：`assets/members/member-id/`）内の立ち絵・衣装画像に対応しました。`outfits` が登録済みなのに表示されない問題と、GitHub Actionsの画像パス検証を修正しています。登録データを保持する場合は、`PATCH_README_V6.2_TO_V6.2.1.md` に従い **Ver.6.2からの修正パッチ**をご利用ください。
+
+---
+
 # Live Craft Ver.6.2 正式版
 
 Ver.6.1.1 を基に FAN EXPERIENCE + LIVE EXPERIENCE を統合しました。新しい機能・手順は `RELEASE_NOTES_v6.2.md`、`FEATURES_V6.2.md`、`PATCH_README_V6.1.1_TO_V6.2.md` を参照してください。

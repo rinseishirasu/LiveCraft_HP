@@ -14,7 +14,7 @@
   };
   const palette = ['#7456E8','#13A8A2','#F06A92','#E4A52C','#4C89E7','#A96BE4','#43A76A'];
   const themeColor = m => /^#[0-9a-fA-F]{6}$/.test(m.memberColor || '') ? m.memberColor : (generation(m) ? palette[(generation(m)-1)%palette.length] : '#7456E8');
-  const safeAvatar = path => typeof path === 'string' && /^assets\/members\/[a-zA-Z0-9_.-]+\.(png|jpg|jpeg|webp|avif)$/.test(path) ? path : null;
+  const safeAvatar = path => typeof path === 'string' && /^assets\/members\/(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9_-][a-zA-Z0-9_.-]*\.(png|jpg|jpeg|webp|avif)$/.test(path) ? path : null;
   // Strictly separate public icon and standing illustration.
   // A missing icon or an icon pointing at the same file as fullbody displays a placeholder.
   const safeProfileIcon = member => {

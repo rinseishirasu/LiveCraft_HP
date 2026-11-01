@@ -85,8 +85,8 @@
       return null;
     }
   };
-  const fullbodyPath = path => typeof path === 'string' && /^assets\/members\/[a-zA-Z0-9_.-]+\.(png|jpg|jpeg|webp|avif)$/.test(path) ? path : null;
-  const avatarPath = path => typeof path === 'string' && /^assets\/members\/[a-zA-Z0-9_.-]+\.(png|jpg|jpeg|webp|avif)$/.test(path) ? path : null;
+  const fullbodyPath = path => typeof path === 'string' && /^assets\/members\/(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9_-][a-zA-Z0-9_.-]*\.(png|jpg|jpeg|webp|avif)$/.test(path) ? path : null;
+  const avatarPath = path => typeof path === 'string' && /^assets\/members\/(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9_-][a-zA-Z0-9_.-]*\.(png|jpg|jpeg|webp|avif)$/.test(path) ? path : null;
   const node = (tag, className, content) => {
     const el = document.createElement(tag);
     if (className) el.className = className;

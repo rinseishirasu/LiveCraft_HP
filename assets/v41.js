@@ -8,7 +8,7 @@
     ? window.LIVE_CRAFT_MEMBERS.filter(m => m && m.published === true && typeof m.name === 'string' && m.name.trim()) : [];
   if (!members.length) return;
   const colors = ['#7456e8', '#13a8a2', '#f06a92', '#e4a52c', '#4c89e7', '#a96be4', '#43a76a'];
-  const safeAvatar = path => typeof path === 'string' && /^assets\/members\/[a-zA-Z0-9_.-]+\.(png|jpg|jpeg|webp|avif)$/.test(path) ? path : null;
+  const safeAvatar = path => typeof path === 'string' && /^assets\/members\/(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9_-][a-zA-Z0-9_.-]*\.(png|jpg|jpeg|webp|avif)$/.test(path) ? path : null;
   const tiles = members.slice(0, 3).map((member, i) => {
     const a = document.createElement('a');
     a.href = 'members.html';
