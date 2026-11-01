@@ -47,6 +47,10 @@ window.LIVE_CRAFT_MEMBERS = [
   {
     "id": "itsumin",
     "published": true,
-    "name": "いつみん"
+    "name": "いつみん",
+    "generation": 1,
+    "role": "運営",
+    "agency": "個人勢",
+    "primaryPlatform": "REALITY"
   }
 ];
