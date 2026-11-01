@@ -30,16 +30,6 @@ window.LIVE_CRAFT_MEMBERS = [
         "label": "X",
         "url": "https://x.com/ShirasuRinsei"
       }
-
-    "links": [
-      {
-        "label": "YouTube",
-        "url": "https://www.youtube.com/@ShirasuRinsei"
-      },
-      {
-        "label": "X",
-        "url": "https://x.com/ShirasuRinsei"
-      }
     ],
     "outfits": [
       {
