@@ -25,7 +25,7 @@ def build(destination,base_url):
         for folder in ['members','news','videos','events','collabs','projects','streams']:
             target=out/'assets'/folder
             if not target.exists():continue
-            for p in list(target.iterdir()):
+            for p in list(target.rglob("*")):
                 if not p.is_file() or p.suffix.lower() not in ('.png','.jpg','.jpeg'):continue
                 try:
                     with Image.open(p) as image:
@@ -36,7 +36,7 @@ def build(destination,base_url):
                         if target_webp.exists():continue
                         im.save(target_webp,'WEBP',quality=84,method=6)
                         if target_webp.stat().st_size<p.stat().st_size:
-                            old='assets/'+folder+'/'+p.name;new='assets/'+folder+'/'+target_webp.name
+                            old='assets/'+p.relative_to(out/'assets').as_posix();new='assets/'+target_webp.relative_to(out/'assets').as_posix()
                             converted[old]=new;p.unlink()
                         else:target_webp.unlink()
                 except Exception as exc:print('Skip image',p,exc,file=sys.stderr)

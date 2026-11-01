@@ -1,3 +1,7 @@
+## Ver.6.3の追加診断
+
+管理フォームは「公開前確認のみ」ONが初期値です。プレビューだけでは公開されません。レポートはActionsのArtifactsに保存されます。詳細はOPERATIONS_V6.3.md。
+
 ## `Cannot find module .../tests/data-format.test.cjs` の場合（Ver.5.1.6）
 
 このエラーは Node.js のバージョンではなく、**GitHub リポジトリのルート直下に `tests/data-format.test.cjs` が存在しない**ことを示します。

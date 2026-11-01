@@ -241,5 +241,16 @@ function main(){
   if(output)fs.appendFileSync(output,`target=${result.target}\noperation=${result.operation}\n`);
   console.log(`Validated ${resource}: ${result.operation} ${result.id || ''}; file ${result.target}`);
 }
-if(require.main===module){try{main();}catch(err){console.error('Live Craft management error:',err.message);process.exitCode=1;}}
-module.exports={apply,readData,writeData,parseField,validateRecord,sourceFor};
+function japaneseGuidance(error) {
+  const msg=String(error||'');
+  if (/legacy entry|duplicate ID|Duplicate ids|missing\/invalid/i.test(msg)) return '既存データのIDを確認してください。重複またはIDなしの場合は「既存データ監査」を先に実行してください。';
+  if (/memberId|public member/i.test(msg)) return '公開済みメンバーの固定IDを指定してください。メンバー管理のIDと完全一致する必要があります。';
+  if (/extras_json|invalid JSON/i.test(msg)) return 'extras_json は正しいJSONオブジェクト形式で入力してください。例: {"outfits":[]}';
+  if (/image|assets\/|outfit/i.test(msg)) return '画像をassets配下へアップロードし、ファイル名の大文字小文字とサブフォルダーを確認してください。';
+  if (/endAt|startAt|repeatUntil|datetime|date/i.test(msg)) return '日時はJSTの 2026-11-01T10:30:00+09:00 形式で入力し、終了日時が開始日時より後になるようにしてください。';
+  if (/ID not found/i.test(msg)) return '対象の固定IDが見つかりません。既存データのIDを確認してください。';
+  if (/HTTPS|URL/i.test(msg)) return 'リンクはhttps://から始まる公開URLを入力してください。';
+  return 'Actionsの入力内容と該当レコードを確認してください。詳しくはOPERATIONS_V6.3.mdをご覧ください。';
+}
+if(require.main===module){try{main();}catch(err){console.error('Live Craft management error:',err.message);console.error('対処方法:',japaneseGuidance(err.message));process.exitCode=1;}}
+module.exports={apply,readData,writeData,parseField,validateRecord,sourceFor,japaneseGuidance};
