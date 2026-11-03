@@ -14,7 +14,7 @@
     a.className = 'v41-home-talent-card v41-home-real-member lc43-featured-card';
     a.href = window.LiveCraftMembers.urlFor(m);
     a.setAttribute('aria-label', `${m.name}の個別プロフィールへ`);
-    a.style.setProperty('--preview-accent',window.LiveCraftMembers.themeColor(m));
+    a.style.setProperty('--preview-accent',window.LiveCraftMembers.generationColor(m));
     const visual = document.createElement('span'); visual.className = 'v41-home-talent-visual';
     const avatar=window.LiveCraftMembers.safeProfileIcon(m);
     if (avatar) {
@@ -24,7 +24,7 @@
     } else visual.textContent=[...m.name].slice(0,2).join('');
     const name=document.createElement('span'); name.className='v41-home-talent-name'; name.textContent=m.name;
     const gen=document.createElement('span'); gen.className='lc43-feature-generation';
-    gen.textContent=Number.isSafeInteger(m.generation)&&m.generation>0?`${m.generation}期生`:'MEMBER';
+    gen.textContent=Number.isSafeInteger(m.generation)&&m.generation>=0?`${m.generation}期生`:'MEMBER';
     a.append(visual, name, gen);
     return a;
   });

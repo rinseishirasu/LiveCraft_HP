@@ -12,3 +12,35 @@ assert.match(studioJs,/JSON\.parse/);assert.match(studioJs,/JSON\.stringify/);as
 const build=read('scripts/build_site.py');assert.match(build, /copytree\(ROOT\/'studio'/);
 const dataFiles=['members.js','streams.js','projects.js','news.js','videos.js','events.js','collabs.js'];dataFiles.forEach(f=>assert.ok(fs.existsSync(path.join(root,'assets',f))));
 console.log('PASS V7.0: 24 public pages retain hooks, responsive theme, local-only Creator Desk, 7 data editors, and build integration');
+
+// Ver.7.0.5 generation colors: 11 explicit presets, including GEN 00, consistent throughout UI.
+const vm=require('node:vm');
+const sandbox={window:{}};
+vm.runInNewContext(read('assets/generation-colors.js'),sandbox);
+const gens=sandbox.window.LiveCraftGenerationColors;
+assert.equal(gens.presets.length,11);
+assert.deepEqual(Array.from(gens.presets,p=>p.generation),Array.from({length:11},(_,i)=>i));
+assert.equal(new Set(Array.from(gens.presets,p=>p.accent)).size,11,'Generation accents must be distinct');
+for(const p of gens.presets){
+ for(const key of ['accent','soft','dark'])assert.match(p[key],/^#[0-9A-F]{6}$/i);
+ assert.equal(gens.presetFor(p.generation).name,p.name);
+ assert.equal(gens.labelFor(p.generation),`${p.generation}期生`);
+}
+assert.equal(gens.generationOf({generation:0}),0);
+assert.equal(gens.generationOf({}),null);
+assert.equal(gens.presetFor(11),null);
+assert.equal(gens.accentFor(11),gens.unassigned.accent);
+const routeScope={window:{LiveCraftGenerationColors:gens},document:{baseURI:'https://example.com/'},URL,URLSearchParams,encodeURIComponent};
+vm.runInNewContext(read('assets/member-routing.js'),routeScope);
+assert.equal(routeScope.window.LiveCraftMembers.generationColor({generation:0}),gens.presets[0].accent);
+assert.equal(routeScope.window.LiveCraftMembers.generationColor({generation:10}),gens.presets[10].accent);
+for(const p of ['index.html','members.html','member.html']) {
+ const page=read(p);
+ assert.ok(page.indexOf('assets/generation-colors.js') < page.indexOf('assets/member-routing.js'),'Palette must load before routing: '+p);
+}
+assert.match(read('studio/index.html'),/assets\/generation-colors\.js/);
+assert.match(read('studio/studio.js'),/generation-palette-guide/);
+assert.match(read('assets/members-page.js'),/member\.generation >= 0/);
+assert.match(read('assets/v41.js'),/generationColors\?\.accentFor/);
+assert.match(read('assets/profile-ui.js'),/member\.generation >= 0/);
+console.log('PASS V7.0.5: 0–10 generation presets, 0 not unassigned, matching member/home/studio colors');

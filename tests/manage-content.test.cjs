@@ -16,6 +16,11 @@ try {
   assert.deepEqual(one('members').genres,['歌','雑談']);
   assert.equal(one('members').birthday,'04-15');
   assert.equal(one('members').published,true);
+  // Ver.7.0.5: 0期生 is a real generation, not a missing value.
+  run('members',{id:'m-zero',name:'0期生テスト',generation:'0',published:'false'});
+  assert.equal(readData('members',root).find(x=>x.id==='m-zero').generation,0);
+  throws('members',{id:'m-zero',generation:'-1',published:'keep'},/generation/);
+
   run('members',{id:'m-a',bio:'hello',published:'keep',featured:'keep'});
   assert.equal(one('members').avatar,'assets/members/a.webp');
   assert.equal(one('members').featured,true);

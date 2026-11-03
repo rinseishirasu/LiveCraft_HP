@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const root = path.resolve(__dirname,'..');
 const html = fs.readFileSync(path.join(root,'schedule.html'),'utf8');
-const scripts = [...html.matchAll(/<script\s+src="([^"]+)"/g)].map(m=>m[1]);
+const scripts = [...html.matchAll(/<script\s+src="([^"]+)"/g)].map(m=>m[1].split('?')[0]);
 const dependencies = [
   'assets/members.js',
   'assets/member-routing.js',

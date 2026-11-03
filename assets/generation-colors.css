@@ -1,0 +1,4 @@
+/* Ver.7.0.5: maintain readable labels across all generation accents. */
+body.version-seven .generation-filter[aria-pressed="true"]{background:var(--gen-dark,#545572);border-color:var(--gen-dark,#545572);color:#fff}
+body.version-seven .member-icon-chip{background:var(--gen-dark,#545572);color:#fff}
+body.version-seven .profile-visual-kicker{background:var(--gen-dark,#545572);color:#fff}

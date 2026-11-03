@@ -1,19 +1,11 @@
 /* Ver.4.3: full-profile renderer shared in presentation and field rules with member modal. */
 (() => {
   'use strict';
-  const generationOf = member => Number.isSafeInteger(member.generation) && member.generation > 0 && member.generation <= 999 ? member.generation : null;
-  const generationLabel = generation => generation == null ? '期生未設定' : `${generation}期生`;
-  // 期生ごとの独自カラー。8期生以降も順番にテーマが巡回します。
-  const generationPalette = [
-    ['#7456E8','#EDE8FF','#5944B9'], // 1期生: lavender
-    ['#13A8A2','#DDF9F4','#087F86'], // 2期生: mint
-    ['#F06A92','#FFE7EF','#C94879'], // 3期生: pink
-    ['#E4A52C','#FFF3CF','#A8741C'], // 4期生: honey
-    ['#4C89E7','#E5F0FF','#3262C0'], // 5期生: blue
-    ['#A96BE4','#F3E8FF','#7E46B9'], // 6期生: orchid
-    ['#43A76A','#E3F7E9','#288451']  // 7期生: green
-  ];
-  const themeFor = generation => generation == null ? ['#7A7C9C','#F1F2F8','#545572'] : generationPalette[(generation - 1) % generationPalette.length];
+  const palette = window.LiveCraftGenerationColors;
+  const generationOf = member => palette?.generationOf(member) ?? (Number.isSafeInteger(member?.generation) && member.generation >= 0 && member.generation <= 999 ? member.generation : null);
+  const generationLabel = generation => palette?.labelFor(generation) || (generation == null ? '期生未設定' : `${generation}期生`);
+  // Shared 0–10期生 presets. Other/unassigned generations use a neutral fallback.
+  const themeFor = generation => palette?.themeFor(generation) || ['#7A7C9C','#F1F2F8','#545572'];
   const applyTheme = (element, generation) => {
     const [accent, soft, deep] = themeFor(generation);
     element.style.setProperty('--gen-accent', accent);

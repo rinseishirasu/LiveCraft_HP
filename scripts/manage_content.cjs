@@ -81,7 +81,7 @@ function parseField(value, type, field) {
     return s;
   }
   if (type === 'generation') {
-    const n=Number(value); if (!Number.isSafeInteger(n) || n < 1 || n>999) fail('generation must be a positive number <=999'); return n;
+    const n=Number(value); if (!Number.isSafeInteger(n) || n < 0 || n>999) fail('generation must be an integer 0..999'); return n;
   }
   if (type === 'date') {
     const s=str(value,field,20); if (!/^\d{4}-\d{2}-\d{2}$/.test(s) || !Number.isFinite(Date.parse(s+'T00:00:00Z')) || new Date(s+'T00:00:00Z').toISOString().slice(0,10)!==s) fail(`${field}: use YYYY-MM-DD`); return s;
