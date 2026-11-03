@@ -280,3 +280,7 @@ body.version-seven :is(a,button,input,select,textarea):focus-visible{outline:3px
   body.version-seven *,body.version-seven *::before,body.version-seven *::after {scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}
 }
 
+
+/* Ver.7.0.3: Footer CTA text contrast fix. Keep dark footer links unchanged. */
+body.version-seven .site-footer .lc6-footer-cta p{color:#403451}
+body.version-seven .site-footer .lc6-footer-cta .lc6-kicker{color:#543b90}
