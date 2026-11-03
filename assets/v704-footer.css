@@ -1,0 +1,173 @@
+/* Live Craft Ver.7.0.4 / redesigned footer
+   Scoped self-contained styles: no dependency on legacy .lc6-footer-* layout.
+   The legacy footer is replaced rather than layered with additional overrides.
+*/
+.lc74-footer {
+  --lc74-bg: #2e2943;
+  --lc74-text: #f7f4ff;
+  --lc74-muted: #ded6eb;
+  --lc74-accent: #c5afed;
+  background:var(--lc74-bg);
+  border:0;
+  color:var(--lc74-text);
+  padding:68px 0 24px;
+  font-size:16px;
+  font-family:Inter, "Noto Sans CJK JP", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
+  line-height:1.6;
+  letter-spacing:normal;
+}
+body.version-seven .lc74-footer .lc74-inner {
+  width:min(calc(100% - 80px),1180px);
+  margin-inline:auto;
+}
+.lc74-footer *, .lc74-footer *::before, .lc74-footer *::after {box-sizing:border-box}
+.lc74-footer a {color:inherit;text-decoration:none}
+.lc74-footer a:focus-visible {outline:3px solid #f0d49d;outline-offset:4px;border-radius:5px}
+.lc74-cta {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:44px;
+  padding:48px clamp(32px,5vw,72px);
+  background:linear-gradient(115deg,#f2ecff 0%,#e9e1fa 100%);
+  border:1px solid #e0d5f3;
+  border-radius:22px;
+  color:#302545;
+  min-height:280px;
+}
+.lc74-cta-content {flex:1 1 0;min-width:0;max-width:720px}
+.lc74-cta .lc74-eyebrow {
+  display:flex;align-items:center;gap:9px;
+  margin:0 0 16px;
+  font-size:12px;line-height:1.5;font-weight:850;
+  letter-spacing:.12em;
+  color:#543b90;
+}
+.lc74-eyebrow span {font-size:19px;line-height:1}
+body.version-seven .lc74-cta h2 {
+  margin:0;
+  font-size:clamp(2.1rem,3.1vw,3.3rem);
+  font-weight:900;
+  line-height:1.27;
+  letter-spacing:-.06em;
+  color:#302545;
+  overflow-wrap:anywhere;
+}
+body.version-seven .lc74-cta h2 span {color:#5c428f}
+body.version-seven .lc74-cta .lc74-cta-description {
+  margin:20px 0 0;
+  max-width:620px;
+  color:#514662;
+  font-size:clamp(14px,1.1vw,16px);
+  line-height:1.85;
+  font-weight:500;
+}
+.lc74-join-button {
+  display:inline-flex;
+  flex:0 0 auto;
+  justify-content:space-between;
+  align-items:center;
+  gap:18px;
+  min-height:56px;
+  min-width:196px;
+  padding:11px 12px 11px 22px;
+  border-radius:12px;
+  background:#543b90;
+  color:#fff !important;
+  border:1px solid #543b90;
+  font-size:15px;
+  font-weight:850;
+  box-shadow:0 6px 14px rgba(84,59,144,.13);
+  transition:background .2s,box-shadow .2s,transform .2s;
+  text-align:left;
+  white-space:nowrap;
+}
+.lc74-join-arrow {
+  display:grid;
+  place-items:center;
+  width:34px;height:34px;
+  border-radius:8px;
+  background:rgba(255,255,255,.16);
+  font-size:20px;
+  font-weight:500;
+}
+.lc74-join-button:hover {background:#442a7c;border-color:#442a7c;box-shadow:0 8px 22px rgba(84,59,144,.23);transform:translateY(-2px)}
+.lc74-main {
+  display:grid;
+  grid-template-columns:minmax(205px,1.06fr) minmax(0,2.94fr);
+  gap:clamp(38px,6vw,96px);
+  padding:58px 0 55px;
+  align-items:start;
+}
+.lc74-brand-block {min-width:0}
+.lc74-brand {display:inline-flex;align-items:center;gap:12px;max-width:100%}
+.lc74-brand img {flex:0 0 48px;width:48px;height:48px;object-fit:contain;background:#fff;border-radius:12px;padding:4px}
+.lc74-brand-wordmark {display:block;font-size:21px;line-height:1.25;font-weight:900;letter-spacing:-.045em;color:#fff}
+.lc74-brand-wordmark small {display:block;margin-top:5px;font-size:9px;letter-spacing:.13em;font-weight:850;color:#ded4f2;line-height:1.4}
+.lc74-brand-dot {color:#cdb1f4}
+body.version-seven .lc74-brand-block p {
+  color:var(--lc74-muted);
+  margin:21px 0 0;
+  font-size:14px;
+  line-height:1.9;
+}
+.lc74-footer-nav {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px 25px;min-width:0}
+.lc74-nav-group {min-width:0}
+body.version-seven .lc74-nav-group h3 {
+  margin:0 0 16px;
+  padding-bottom:12px;
+  border-bottom:1px solid #5b4f72;
+  color:#eadcff;
+  font-size:12px;
+  font-weight:850;
+  line-height:1.55;
+  letter-spacing:.055em;
+  overflow-wrap:anywhere;
+}
+.lc74-nav-group ul {margin:0;padding:0;list-style:none;display:grid;gap:1px}
+.lc74-nav-group li {margin:0;padding:0;min-width:0}
+.lc74-nav-group a {
+  display:inline-flex;
+  align-items:center;
+  width:100%;
+  min-height:38px;
+  padding:6px 0;
+  font-size:14px;
+  line-height:1.65;
+  font-weight:650;
+  color:#f3eefb;
+  overflow-wrap:anywhere;
+  transition:color .2s,transform .2s;
+}
+.lc74-nav-group a:hover {color:#e6c8ff;transform:translateX(3px)}
+.lc74-bottom {border-top:1px solid #5b4f72;padding:22px 0 0;display:flex;align-items:center;justify-content:space-between;gap:14px 28px;flex-wrap:wrap}
+body.version-seven .lc74-bottom p {color:#ded6eb;margin:0;font-size:12px;letter-spacing:.02em;line-height:1.6}
+.lc74-footer-tagline {color:#e0d8ea;letter-spacing:.16em;font-size:11px;font-weight:800}
+.lc74-footer-tagline span {color:#c5afed;padding-inline:3px}
+@media(max-width:1000px) {
+  .lc74-main {grid-template-columns:1fr;gap:38px;padding:48px 0 45px}
+  .lc74-footer-nav {max-width:900px}
+}
+@media(max-width:760px) {
+  body.version-seven .lc74-footer .lc74-inner {width:calc(100% - 38px)}
+  .lc74-footer {padding-top:36px}
+  .lc74-cta {flex-direction:column;align-items:stretch;gap:26px;padding:36px 30px;min-height:0;border-radius:18px}
+  .lc74-cta-content {flex:auto}
+  .lc74-join-button {align-self:flex-start}
+  body.version-seven .lc74-cta h2 {font-size:clamp(2rem,6vw,2.7rem);line-height:1.32}
+}
+@media(max-width:520px) {
+  .lc74-cta {padding:30px 23px;gap:24px}
+  body.version-seven .lc74-cta h2 {font-size:clamp(1.85rem,8vw,2.15rem)}
+  .lc74-desktop-break {display:none}
+  .lc74-join-button {width:100%;min-width:0;align-self:stretch}
+  .lc74-main {padding:43px 0 34px;gap:32px}
+  .lc74-footer-nav {grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 18px}
+  .lc74-nav-group:nth-child(3) {grid-column:span 2}
+  .lc74-nav-group:nth-child(3) ul {grid-template-columns:repeat(2,minmax(0,1fr));column-gap:18px}
+  .lc74-bottom {align-items:flex-start;flex-direction:column;padding-top:20px;gap:8px}
+  .lc74-footer-tagline {font-size:10px}
+}
+@media(prefers-reduced-motion:reduce) {
+  .lc74-footer *, .lc74-footer *::before, .lc74-footer *::after {transition:none!important;transform:none!important}
+}
