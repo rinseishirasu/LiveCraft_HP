@@ -10,7 +10,7 @@ window.LIVE_CRAFT_STREAMS = [
     "platform": "REALITY",
     "startAt": "2026-11-03T23:00:00+09:00",
     "endAt": "2026-11-04T00:00:00+09:00",
-    "status": "scheduled",
+    "status": "ended",
     "repeat": "none"
   },
   {
@@ -21,7 +21,7 @@ window.LIVE_CRAFT_STREAMS = [
     "platform": "REALITY",
     "startAt": "2026-11-04T07:30:00+09:00",
     "endAt": "2026-11-04T08:25:00+09:00",
-    "status": "scheduled"
+    "status": "ended"
   },
   {
     "id": "rinsei-20261104-night",
@@ -32,5 +32,27 @@ window.LIVE_CRAFT_STREAMS = [
     "startAt": "2026-11-04T23:00:00+09:00",
     "endAt": "2026-11-05T00:00:00+09:00",
     "status": "scheduled"
+  },
+  {
+    "id": "rinsei-20261105-moring",
+    "published": true,
+    "title": "【朝枠】もくようび【～8:25】",
+    "memberId": "rinsei-shirasu",
+    "platform": "REALITY",
+    "startAt": "2026-11-05T07:30:00+09:00",
+    "endAt": "2026-11-05T08:25:00+09:00",
+    "status": "scheduled",
+    "repeat": "none"
+  },
+  {
+    "id": "rinsei-20261105-night",
+    "published": true,
+    "title": "【夜枠】もくよーび【～24:00】",
+    "memberId": "rinsei-shirasu",
+    "platform": "REALITY",
+    "startAt": "2026-11-05T23:00:00+09:00",
+    "endAt": "2026-11-06T00:00:00+09:00",
+    "status": "scheduled",
+    "repeat": "none"
   }
 ];

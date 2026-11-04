@@ -19,8 +19,8 @@ window.LIVE_CRAFT_MEMBERS = [
     "debutDate": "2026-01-02",
     "fanName": "ちりめんず",
     "fanMark": "🐺🥝",
-    "avatar": "assets/members/rinsei-shirasu/rinsei-shirasu-icon.png",
-    "fullbody": "assets/members/rinsei-shirasu/rinsei-shirasu-full-body.png",
+    "avatar": "assets/members/rinsei-shirasu/rinsei-shirasu-icon.webp",
+    "fullbody": "assets/members/rinsei-shirasu/rinsei-shirasu-full-body.webp",
     "primaryPlatform": "REALITY",
     "primaryPlatformUrl": "https://reality.app/profile/d19a7bd0?adj_t=8ogcewh_z9yhix5",
     "links": [
@@ -36,13 +36,20 @@ window.LIVE_CRAFT_MEMBERS = [
     "outfits": [
       {
         "label": "魔法の学び舎",
-        "image": "assets/members/rinsei-shirasu/rinsei-shirasu-fullbody-magic.png"
+        "image": "assets/members/rinsei-shirasu/rinsei-shirasu-fullbody-magic.webp"
       },
       {
         "label": "ﾘﾒｲｸｽﾀｲﾙ",
-        "image": "assets/members/rinsei-shirasu/rinsei-shirasu-fullbody-remake.png"
+        "image": "assets/members/rinsei-shirasu/rinsei-shirasu-fullbody-remake.webp"
       }
     ],
-    "featured": false
+    "featured": false,
+    "streamTag": "白栖日和",
+    "fanArtTag": "ちりめんずアート",
+    "hobbies": [
+      "音楽鑑賞",
+      "映画鑑賞"
+    ],
+    "memberColor": "緑"
   }
 ];
