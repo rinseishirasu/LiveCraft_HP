@@ -19,8 +19,8 @@ window.LIVE_CRAFT_MEMBERS = [
     "debutDate": "2026-01-02",
     "fanName": "ちりめんず",
     "fanMark": "🐺🥝",
-    "avatar": "assets/members/rinsei-shirasu/rinsei-shirasu-icon.webp",
-    "fullbody": "assets/members/rinsei-shirasu/rinsei-shirasu-full-body.webp",
+    "avatar": "assets/members/rinsei-shirasu/rinsei-shirasu-icon.png",
+    "fullbody": "assets/members/rinsei-shirasu/rinsei-shirasu-full-body.png",
     "primaryPlatform": "REALITY",
     "primaryPlatformUrl": "https://reality.app/profile/d19a7bd0?adj_t=8ogcewh_z9yhix5",
     "links": [
@@ -36,11 +36,11 @@ window.LIVE_CRAFT_MEMBERS = [
     "outfits": [
       {
         "label": "魔法の学び舎",
-        "image": "assets/members/rinsei-shirasu/rinsei-shirasu-fullbody-magic.webp"
+        "image": "assets/members/rinsei-shirasu/rinsei-shirasu-fullbody-magic.png"
       },
       {
         "label": "ﾘﾒｲｸｽﾀｲﾙ",
-        "image": "assets/members/rinsei-shirasu/rinsei-shirasu-fullbody-remake.webp"
+        "image": "assets/members/rinsei-shirasu/rinsei-shirasu-fullbody-remake.png"
       }
     ],
     "featured": false,
